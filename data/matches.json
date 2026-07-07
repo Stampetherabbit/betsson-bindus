@@ -1,0 +1,220 @@
+{
+  "meta": {
+    "dataVersion": "2026-07-07",
+    "verifiedAt": "2026-07-07",
+    "source": "Al Jazeera / ESPN 2026-07-07 — kvartsfinalister bekräftade: Frankrike, Marocko, Spanien, Belgien, Norge, England, Argentina. Schweiz–Colombia sista åttondelen.",
+    "note": "Uppdatera efter varje match: sätt status till 'finished' + fyll i result, eller redigera odds. Sajten renderar allt härifrån — ingen kodändring behövs.",
+    "timezone": "Europe/Stockholm",
+    "competition": {
+      "id": "vm-2026",
+      "name": "Fotbolls-VM 2026",
+      "sport": "Fotboll",
+      "phase": "Slutspel"
+    }
+  },
+  "matches": [
+    {
+      "id": "r16-sui-col",
+      "stage": "Åttondelsfinal",
+      "kickoff": "2026-07-07T22:00:00+02:00",
+      "timeTbd": false,
+      "venue": "BC Place",
+      "city": "Vancouver",
+      "home": { "name": "Schweiz", "code": "SUI" },
+      "away": { "name": "Colombia", "code": "COL" },
+      "status": "open",
+      "result": null,
+      "markets": [
+        {
+          "id": "1x2",
+          "name": "Matchresultat",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "r16-sui-col--1", "label": "1", "name": "Schweiz", "odds": 2.85, "openingOdds": 2.95 },
+            { "id": "r16-sui-col--x", "label": "X", "name": "Oavgjort", "odds": 3.10, "openingOdds": 3.10 },
+            { "id": "r16-sui-col--2", "label": "2", "name": "Colombia", "odds": 2.62, "openingOdds": 2.55 }
+          ]
+        },
+        {
+          "id": "ou25",
+          "name": "Över/Under 2.5 mål",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "r16-sui-col--over", "label": "Över 2.5", "name": "Över 2.5 mål", "odds": 2.20, "openingOdds": 2.10 },
+            { "id": "r16-sui-col--under", "label": "Under 2.5", "name": "Under 2.5 mål", "odds": 1.66, "openingOdds": 1.72 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qf1-fra-mar",
+      "stage": "Kvartsfinal",
+      "kickoff": "2026-07-09T22:00:00+02:00",
+      "timeTbd": false,
+      "venue": "Boston Stadium",
+      "city": "Boston",
+      "home": { "name": "Frankrike", "code": "FRA" },
+      "away": { "name": "Marocko", "code": "MAR" },
+      "status": "open",
+      "result": null,
+      "markets": [
+        {
+          "id": "1x2",
+          "name": "Matchresultat",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf1-fra-mar--1", "label": "1", "name": "Frankrike", "odds": 1.72, "openingOdds": 1.80 },
+            { "id": "qf1-fra-mar--x", "label": "X", "name": "Oavgjort", "odds": 3.50, "openingOdds": 3.45 },
+            { "id": "qf1-fra-mar--2", "label": "2", "name": "Marocko", "odds": 5.40, "openingOdds": 5.00 }
+          ]
+        },
+        {
+          "id": "ou25",
+          "name": "Över/Under 2.5 mål",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf1-fra-mar--over", "label": "Över 2.5", "name": "Över 2.5 mål", "odds": 2.35, "openingOdds": 2.30 },
+            { "id": "qf1-fra-mar--under", "label": "Under 2.5", "name": "Under 2.5 mål", "odds": 1.58, "openingOdds": 1.60 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qf2-esp-bel",
+      "stage": "Kvartsfinal",
+      "kickoff": "2026-07-10T21:00:00+02:00",
+      "timeTbd": false,
+      "venue": "Los Angeles Stadium",
+      "city": "Los Angeles",
+      "home": { "name": "Spanien", "code": "ESP" },
+      "away": { "name": "Belgien", "code": "BEL" },
+      "status": "open",
+      "result": null,
+      "markets": [
+        {
+          "id": "1x2",
+          "name": "Matchresultat",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf2-esp-bel--1", "label": "1", "name": "Spanien", "odds": 1.58, "openingOdds": 1.62 },
+            { "id": "qf2-esp-bel--x", "label": "X", "name": "Oavgjort", "odds": 4.00, "openingOdds": 3.90 },
+            { "id": "qf2-esp-bel--2", "label": "2", "name": "Belgien", "odds": 5.80, "openingOdds": 5.60 }
+          ]
+        },
+        {
+          "id": "ou25",
+          "name": "Över/Under 2.5 mål",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf2-esp-bel--over", "label": "Över 2.5", "name": "Över 2.5 mål", "odds": 1.85, "openingOdds": 1.90 },
+            { "id": "qf2-esp-bel--under", "label": "Under 2.5", "name": "Under 2.5 mål", "odds": 1.95, "openingOdds": 1.90 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qf3-nor-eng",
+      "stage": "Kvartsfinal",
+      "kickoff": "2026-07-11T23:00:00+02:00",
+      "timeTbd": false,
+      "venue": "Miami Stadium",
+      "city": "Miami",
+      "home": { "name": "Norge", "code": "NOR" },
+      "away": { "name": "England", "code": "ENG" },
+      "status": "open",
+      "result": null,
+      "markets": [
+        {
+          "id": "1x2",
+          "name": "Matchresultat",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf3-nor-eng--1", "label": "1", "name": "Norge", "odds": 3.15, "openingOdds": 3.60 },
+            { "id": "qf3-nor-eng--x", "label": "X", "name": "Oavgjort", "odds": 3.30, "openingOdds": 3.30 },
+            { "id": "qf3-nor-eng--2", "label": "2", "name": "England", "odds": 2.25, "openingOdds": 2.10 }
+          ]
+        },
+        {
+          "id": "ou25",
+          "name": "Över/Under 2.5 mål",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf3-nor-eng--over", "label": "Över 2.5", "name": "Över 2.5 mål", "odds": 1.90, "openingOdds": 1.95 },
+            { "id": "qf3-nor-eng--under", "label": "Under 2.5", "name": "Under 2.5 mål", "odds": 1.90, "openingOdds": 1.85 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qf4-arg-tbd",
+      "stage": "Kvartsfinal",
+      "kickoff": "2026-07-13T03:00:00+02:00",
+      "timeTbd": false,
+      "venue": "Kansas City Stadium",
+      "city": "Kansas City",
+      "home": { "name": "Argentina", "code": "ARG" },
+      "away": { "name": "Schweiz / Colombia", "code": null, "tbd": true },
+      "status": "awaiting",
+      "statusNote": "Odds släpps när motståndaren är klar",
+      "result": null,
+      "markets": []
+    },
+    {
+      "id": "sf1",
+      "stage": "Semifinal",
+      "kickoff": "2026-07-14T21:00:00+02:00",
+      "timeTbd": true,
+      "venue": "Dallas Stadium",
+      "city": "Dallas",
+      "home": { "name": "Klart efter kvartsfinalerna", "code": null, "tbd": true },
+      "away": { "name": "Klart efter kvartsfinalerna", "code": null, "tbd": true },
+      "status": "scheduled",
+      "result": null,
+      "markets": []
+    },
+    {
+      "id": "sf2",
+      "stage": "Semifinal",
+      "kickoff": "2026-07-15T21:00:00+02:00",
+      "timeTbd": true,
+      "venue": "Atlanta Stadium",
+      "city": "Atlanta",
+      "home": { "name": "Klart efter kvartsfinalerna", "code": null, "tbd": true },
+      "away": { "name": "Klart efter kvartsfinalerna", "code": null, "tbd": true },
+      "status": "scheduled",
+      "result": null,
+      "markets": []
+    },
+    {
+      "id": "final",
+      "stage": "Final",
+      "kickoff": "2026-07-19T21:00:00+02:00",
+      "timeTbd": true,
+      "venue": "MetLife Stadium",
+      "city": "New York / New Jersey",
+      "home": { "name": "Klart efter semifinalerna", "code": null, "tbd": true },
+      "away": { "name": "Klart efter semifinalerna", "code": null, "tbd": true },
+      "status": "scheduled",
+      "result": null,
+      "markets": []
+    }
+  ],
+  "outrights": [
+    {
+      "id": "outright-winner",
+      "name": "Vinnare — VM 2026",
+      "note": "Turneringsvinnare",
+      "selections": [
+        { "id": "outright--fra", "name": "Frankrike", "code": "FRA", "odds": 3.60, "openingOdds": 3.75 },
+        { "id": "outright--esp", "name": "Spanien", "code": "ESP", "odds": 3.80, "openingOdds": 3.60 },
+        { "id": "outright--eng", "name": "England", "code": "ENG", "odds": 4.75, "openingOdds": 5.00 },
+        { "id": "outright--arg", "name": "Argentina", "code": "ARG", "odds": 6.00, "openingOdds": 5.75 },
+        { "id": "outright--nor", "name": "Norge", "code": "NOR", "odds": 10.00, "openingOdds": 13.00 },
+        { "id": "outright--bel", "name": "Belgien", "code": "BEL", "odds": 13.00, "openingOdds": 12.00 },
+        { "id": "outright--mar", "name": "Marocko", "code": "MAR", "odds": 17.00, "openingOdds": 19.00 },
+        { "id": "outright--col", "name": "Colombia", "code": "COL", "odds": 26.00, "openingOdds": 28.00 },
+        { "id": "outright--sui", "name": "Schweiz", "code": "SUI", "odds": 34.00, "openingOdds": 32.00 }
+      ]
+    }
+  ]
+}

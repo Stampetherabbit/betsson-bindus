@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Betsson &amp; Bindus — Sportsbook · VM 2026</title>
+  <meta name="description" content="Privat sportsbook för fotbolls-VM 2026 — Jasmine mot Erika. Odds, kupong och leaderboard. Inga riktiga pengar.">
+  <meta name="theme-color" content="#0E1218">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Betsson &amp; Bindus">
+  <meta property="og:title" content="Betsson &amp; Bindus — Sportsbook · VM 2026">
+  <meta property="og:description" content="Privat sportsbook för VM 2026 — Jasmine mot Erika. Kvartsfinalerna avgörs.">
+  <meta property="og:url" content="https://stampetherabbit.github.io/betsson-bindus/">
+  <meta property="og:image" content="https://stampetherabbit.github.io/betsson-bindus/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon-96.png" type="image/png" sizes="96x96">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Hoppa till innehållet</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#main" aria-label="Betsson och Bindus — till startsidan">
+        <svg class="cat-glyph" viewBox="0 0 32 32" width="22" height="22" aria-hidden="true" focusable="false">
+          <circle cx="16" cy="18" r="10" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M9 10 L12 4 L15 11 Z" fill="currentColor"/>
+          <path d="M23 10 L20 4 L17 11 Z" fill="currentColor"/>
+          <circle cx="12.5" cy="17" r="1.4" fill="var(--bg)"/>
+          <circle cx="19.5" cy="17" r="1.4" fill="var(--bg)"/>
+        </svg>
+        <span class="wordmark">betsson<span class="dot">·</span>bindus</span>
+      </a>
+      <div class="balance-pill" title="Fiktivt saldo — inga riktiga pengar">
+        <span class="balance-label">Saldo</span>
+        <span class="balance-value tnum" id="balance-value">5 000 kr</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell layout">
+    <main id="main">
+
+      <section class="hero" aria-labelledby="hero-title">
+        <p class="hero-eyebrow"><span class="live-dot" aria-hidden="true"></span> <span id="hero-eyebrow-text">VM 2026 · Slutspel</span></p>
+        <h1 id="hero-title">Kvartsfinalerna avgörs</h1>
+
+        <div class="countdown-wrap">
+          <p class="countdown-label" id="countdown-label">Härnäst</p>
+          <div class="countdown" id="countdown" aria-label="Nedräkning till nästa avspark">
+            <span class="cd-block"><span class="cd-num tnum" id="cd-h">–</span><span class="cd-unit">tim</span></span>
+            <span class="cd-sep" aria-hidden="true">:</span>
+            <span class="cd-block"><span class="cd-num tnum" id="cd-m">–</span><span class="cd-unit">min</span></span>
+            <span class="cd-sep" aria-hidden="true">:</span>
+            <span class="cd-block"><span class="cd-num tnum" id="cd-s">–</span><span class="cd-unit">sek</span></span>
+          </div>
+        </div>
+
+        <ul class="hero-chips" id="hero-chips" aria-label="Kvartsfinaler"></ul>
+        <p class="hero-final-teaser" id="hero-final-teaser"></p>
+      </section>
+
+      <section class="section" id="matcher" aria-labelledby="matcher-title">
+        <h2 class="section-title" id="matcher-title">Matcher</h2>
+        <div class="match-list" id="match-list">
+          <p class="loading-note">Laddar odds …</p>
+        </div>
+      </section>
+
+      <section class="section" id="senare" aria-labelledby="senare-title" hidden>
+        <h2 class="section-title" id="senare-title">Senare i slutspelet</h2>
+        <div class="upcoming-list" id="upcoming-list"></div>
+      </section>
+
+      <section class="section" id="vinnare" aria-labelledby="vinnare-title" hidden>
+        <h2 class="section-title" id="vinnare-title">Vinnare — VM 2026</h2>
+        <div class="outright-grid" id="outright-grid"></div>
+      </section>
+
+      <section class="section heart-section" id="medlemmar" aria-labelledby="medlemmar-title">
+        <div class="heart-header">
+          <h2 class="heart-title" id="medlemmar-title">Jasmine <span class="vs">vs</span> Erika</h2>
+          <span class="heart-sub">Ställning · VM 2026</span>
+          <span class="example-badge" id="example-badge" hidden title="Påhittade spel — ersätt i data/bets.json">Exempeldata</span>
+        </div>
+        <div id="leaderboard">
+          <p class="loading-note">Laddar ställningen …</p>
+        </div>
+      </section>
+
+    </main>
+
+    <aside class="betslip empty" id="betslip">
+      <button class="betslip-bar" id="slip-bar" aria-expanded="false" aria-controls="slip-panel">
+        <span class="slip-bar-left">
+          <span class="slip-badge tnum" id="slip-badge-bar">0</span>
+          <span>Kupong</span>
+        </span>
+        <span class="slip-bar-right">
+          <span class="slip-bar-payout tnum" id="slip-bar-payout"></span>
+          <svg class="chev" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 10 L8 5 L13 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </button>
+
+      <div class="betslip-panel" id="slip-panel" role="dialog" aria-modal="false" aria-label="Kupong">
+        <button class="sheet-handle" id="sheet-handle" aria-label="Stäng kupongen"><span aria-hidden="true"></span></button>
+
+        <div class="slip-view" id="slip-view">
+          <div class="slip-header">
+            <h2 class="slip-title" tabindex="-1" id="slip-heading">Kupong <span class="slip-badge tnum" id="slip-badge">0</span></h2>
+            <button class="slip-clear" id="slip-clear" hidden>Rensa</button>
+          </div>
+
+          <div class="slip-empty" id="slip-empty">
+            <svg class="cat-glyph big" viewBox="0 0 32 32" width="34" height="34" aria-hidden="true" focusable="false">
+              <circle cx="16" cy="18" r="10" fill="none" stroke="currentColor" stroke-width="2.5"/>
+              <path d="M9 10 L12 4 L15 11 Z" fill="currentColor"/>
+              <path d="M23 10 L20 4 L17 11 Z" fill="currentColor"/>
+              <circle cx="12.5" cy="17" r="1.4" fill="var(--surface-raised)"/>
+              <circle cx="19.5" cy="17" r="1.4" fill="var(--surface-raised)"/>
+            </svg>
+            <p>Kupongen är tom.</p>
+            <p class="slip-empty-hint">Tryck på ett odds så läggs det här.</p>
+          </div>
+
+          <div class="slip-body" id="slip-body" hidden>
+            <div class="slip-mode" role="group" aria-label="Speltyp">
+              <button class="mode-btn active" id="mode-single" aria-pressed="true">Singel</button>
+              <button class="mode-btn" id="mode-kombi" aria-pressed="false">Kombi</button>
+            </div>
+            <p class="kombi-hint" id="kombi-hint" hidden>Kombi kräver minst två val från olika matcher.</p>
+
+            <ul class="slip-rows" id="slip-rows"></ul>
+
+            <div class="slip-total-odds" id="slip-total-odds" hidden>
+              <span>Totalodds</span>
+              <span class="tnum" id="total-odds-value">–</span>
+            </div>
+
+            <div class="stake-block">
+              <label class="stake-label" for="stake-input" id="stake-label">Insats</label>
+              <div class="stake-field">
+                <input class="stake-input tnum" id="stake-input" type="text" inputmode="numeric" autocomplete="off" value="100" aria-describedby="stake-hint">
+                <span class="stake-suffix" aria-hidden="true">kr</span>
+              </div>
+              <div class="stake-quick" role="group" aria-label="Snabbval för insats">
+                <button class="quick-btn" data-stake="50">50</button>
+                <button class="quick-btn" data-stake="100">100</button>
+                <button class="quick-btn" data-stake="250">250</button>
+                <button class="quick-btn" data-stake="all">Allt</button>
+              </div>
+              <p class="stake-hint" id="stake-hint" hidden></p>
+            </div>
+
+            <div class="payout-box" aria-live="polite">
+              <div class="payout-row muted-row" id="total-stake-row" hidden>
+                <span>Total insats</span>
+                <span class="tnum" id="total-stake-value">–</span>
+              </div>
+              <div class="payout-row">
+                <span>Möjlig utbetalning</span>
+                <span class="payout-value tnum" id="payout-value">0 kr</span>
+              </div>
+            </div>
+
+            <button class="place-btn" id="place-btn">Lägg spel</button>
+          </div>
+        </div>
+
+        <div class="receipt-view" id="receipt-view" hidden>
+          <div class="receipt" id="receipt"></div>
+          <div class="receipt-actions">
+            <button class="ghost-btn" id="receipt-done">Klar</button>
+            <button class="share-btn" id="receipt-share">Dela med motståndaren</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="backdrop" id="backdrop" hidden></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <footer class="site-footer">
+    <div class="shell">
+      <p class="footer-brand">
+        <svg class="cat-glyph" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false">
+          <circle cx="16" cy="18" r="10" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M9 10 L12 4 L15 11 Z" fill="currentColor"/>
+          <path d="M23 10 L20 4 L17 11 Z" fill="currentColor"/>
+        </svg>
+        Bindus Spel &amp; Odds AB
+      </p>
+      <p>Privat plattform mellan Jasmine &amp; Erika. Inga riktiga pengar hanteras — alla odds och saldon är fiktiva och för nöjes skull. Ej affilierad med Betsson AB.</p>
+      <p class="footer-meta"><span id="data-version"></span> · <button class="footer-reset" id="reset-balance">Återställ fiktivt saldo</button></p>
+    </div>
+  </footer>
+
+  <noscript>
+    <div class="noscript-note">Sajten behöver JavaScript för att visa odds och kupong. Aktivera JavaScript och ladda om sidan.</div>
+  </noscript>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
