@@ -1,12 +1,11 @@
-/* betsson·bindus — sportsbook + casino.
-   Allt innehåll renderas från data/matches.json + data/bets.json + data/slots.json.
-   Saldo, jackpott och lagda spel är fiktiva och bor i localStorage. */
+/* betsson·bindus — sportsbook.
+   Allt innehåll renderas från data/matches.json + data/bets.json.
+   Saldo och lagda spel är fiktiva och bor i localStorage. */
 
 const LS = {
   balance: 'bb-balance',
   placed: 'bb-placed',
   seenOdds: 'bb-odds-seen',
-  jackpot: 'bb-jackpot',
 };
 const START_BALANCE = 5000;
 const LIVE_WINDOW_MIN = 150; // ~matchlängd inkl. paus: spelstopp-fönster efter avspark
@@ -120,7 +119,6 @@ function revealify(nodes) {
 const state = {
   matchesData: null,
   betsData: null,
-  slotsData: null,
   selections: new Map(),   // selId -> {selId, matchId, matchLabel, marketName, pickName}
   mode: 'single',
   currentOdds: new Map(),  // selId -> aktuellt odds
@@ -130,12 +128,6 @@ const state = {
   arrowTimers: new Map(),
   startedSeen: new Set(),
   sheetOpener: null,
-  jackpot: 0,
-  slotStake: 10,
-  spinning: false,
-  activeGame: null,
-  slotOpener: null,
-  casinoRendered: false,
 };
 
 function loadBalance() {
@@ -146,7 +138,6 @@ function loadBalance() {
 function saveBalance() { localStorage.setItem(LS.balance, String(state.balance)); }
 function renderBalance() {
   animateCount($('balance-value'), state.balance);
-  updateSpinState();
 }
 
 /* ---------- Skeletons (måtten speglar riktiga kort → ingen layout-shift) ---------- */
@@ -165,18 +156,14 @@ async function init() {
   $('balance-value').textContent = fmtKr(state.balance);
   $('balance-value').dataset.countVal = String(state.balance);
   renderSkeletons();
-  initNav();
 
-  let slotsRes = null;
   try {
-    const [matchesRes, betsRes, sRes] = await Promise.all([
+    const [matchesRes, betsRes] = await Promise.all([
       fetch('data/matches.json'), fetch('data/bets.json'),
-      fetch('data/slots.json').catch(() => null),
     ]);
     if (!matchesRes.ok || !betsRes.ok) throw new Error('http');
     state.matchesData = await matchesRes.json();
     state.betsData = await betsRes.json();
-    slotsRes = sRes;
   } catch {
     $('match-list').innerHTML = '';
     $('match-list').append(el('p', { class: 'match-note', text: 'Odds kunde inte laddas just nu. Ladda om sidan, eller kontrollera att data/matches.json finns.' }));
@@ -184,9 +171,6 @@ async function init() {
     $('leaderboard').append(el('p', { class: 'match-note', text: 'Ställningen kunde inte laddas.' }));
     return;
   }
-  try {
-    if (slotsRes && slotsRes.ok) state.slotsData = await slotsRes.json();
-  } catch { state.slotsData = null; }
 
   indexSelections();
   renderHero();
@@ -195,15 +179,12 @@ async function init() {
   renderUpcoming();
   renderOutrightBlocks();
   renderLeaderboard();
-  renderCasino();
   renderFooterMeta();
   renderSlip();
   initSlipUI();
   initSheet();
-  initSlotUI();
   initMagneticPress();
   startCountdown();
-  startJackpotTick();
   flashFileChanges();
   startDrift();
 }
@@ -279,30 +260,6 @@ function checkStartedTransitions() {
   }
 }
 
-/* ---------- Vy-växling Sport | Casino ---------- */
-function setView(view) {
-  if (document.body.dataset.view === view) return;
-  const apply = () => {
-    document.body.dataset.view = view;
-    $('sport-view').hidden = view !== 'sport';
-    $('casino-view').hidden = view !== 'casino';
-    $('nav-sport').classList.toggle('active', view === 'sport');
-    $('nav-sport').setAttribute('aria-pressed', String(view === 'sport'));
-    $('nav-casino').classList.toggle('active', view === 'casino');
-    $('nav-casino').setAttribute('aria-pressed', String(view === 'casino'));
-  };
-  if (document.startViewTransition && !reducedMotion.matches) {
-    document.startViewTransition(apply);
-  } else {
-    apply();
-  }
-}
-
-function initNav() {
-  $('nav-sport').addEventListener('click', () => setView('sport'));
-  $('nav-casino').addEventListener('click', () => setView('casino'));
-}
-
 /* ---------- Hero ---------- */
 function renderHero() {
   const comp = state.matchesData.meta.competition;
@@ -318,7 +275,6 @@ function renderHero() {
         type: 'button',
         'aria-label': `Gå till ${matchLabel(m)}`,
         onclick: () => {
-          setView('sport');
           const card = document.querySelector(`[data-match="${m.id}"]`);
           if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
         },
@@ -1116,14 +1072,8 @@ function initSheet() {
   });
   $('backdrop').addEventListener('click', closeSheet);
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (!$('slot-modal').hidden) { closeSlot(); return; }
-      closeSheet();
-    }
-    if (e.key === 'Tab') {
-      if (!$('slot-modal').hidden) { trapFocus(e, $('slot-modal')); return; }
-      if (isMobile() && $('betslip').classList.contains('open')) trapFocus(e, $('slip-panel'));
-    }
+    if (e.key === 'Escape') closeSheet();
+    if (e.key === 'Tab' && isMobile() && $('betslip').classList.contains('open')) trapFocus(e, $('slip-panel'));
   });
   $('sheet-handle').addEventListener('click', closeSheet);
   $('receipt-share').addEventListener('click', shareReceipt);
@@ -1255,333 +1205,10 @@ function startDrift() {
   setTimeout(() => setInterval(driftTick, 9000), 3000);
 }
 
-/* ============================================================
-   CASINO
-   ============================================================ */
-
-function loadJackpot() {
-  const seed = state.slotsData?.meta?.jackpot?.seed ?? 48250;
-  const raw = localStorage.getItem(LS.jackpot);
-  const n = raw == null ? NaN : Number(raw);
-  state.jackpot = Number.isFinite(n) && n >= seed * 0.5 ? n : seed;
-}
-function saveJackpot() { localStorage.setItem(LS.jackpot, String(Math.round(state.jackpot))); }
-function renderJackpot() {
-  $('jackpot-value').textContent = fmtKr(Math.round(state.jackpot));
-}
-
-function renderCasino() {
-  const grid = $('casino-grid');
-  grid.innerHTML = '';
-  if (!state.slotsData || !state.slotsData.games?.length) {
-    grid.append(el('p', { class: 'match-note', text: 'Casinot kunde inte laddas — kontrollera data/slots.json.' }));
-    $('jackpot-value').textContent = '–';
-    $('players-online').textContent = '';
-    return;
-  }
-  loadJackpot();
-  renderJackpot();
-  renderPlayersOnline();
-
-  for (const game of state.slotsData.games) {
-    const topGlyphs = [...game.symbols].slice(-3).map((s) => s.glyph).join('');
-    const tile = el('button', {
-      type: 'button',
-      class: 'slot-tile',
-      style: `--art-from:${game.artFrom};--art-to:${game.artTo}`,
-      'aria-label': `Spela ${game.name} — ${game.tagline}`,
-      onclick: (e) => openSlot(game, e.currentTarget),
-    },
-      el('span', { class: 'tile-inner' },
-        el('span', { class: 'tile-glyphs', 'aria-hidden': 'true', text: topGlyphs }),
-        el('span', {},
-          el('span', { class: 'tile-name', text: game.name }),
-          el('span', { class: 'tile-meta' },
-            el('span', { text: game.rtpLabel || '' }),
-            el('span', { class: 'tile-play', 'aria-hidden': 'true', text: 'Spela' }))),
-      ));
-    initTilt(tile);
-    grid.append(tile);
-  }
-  revealify([...grid.children]);
-  state.casinoRendered = true;
-}
-
-/* 3D-tilt på spel-tiles — endast pekare med precision, aldrig touch */
-function initTilt(tile) {
-  if (!finePointer.matches || reducedMotion.matches) return;
-  const inner = tile.querySelector('.tile-inner');
-  tile.addEventListener('pointermove', (e) => {
-    const r = tile.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    inner.style.setProperty('--ry', `${(px * 6).toFixed(2)}deg`);
-    inner.style.setProperty('--rx', `${(-py * 6).toFixed(2)}deg`);
-  });
-  tile.addEventListener('pointerleave', () => {
-    inner.style.setProperty('--rx', '0deg');
-    inner.style.setProperty('--ry', '0deg');
-  });
-}
-
-/* Jackpott-tick + spelare online (presentationslager, fiktivt) */
-function startJackpotTick() {
-  const cfg = state.slotsData?.meta?.jackpot;
-  if (!cfg) return;
-  setInterval(() => {
-    if (document.hidden || document.body.dataset.view !== 'casino') return;
-    state.jackpot += cfg.tickMin + Math.random() * (cfg.tickMax - cfg.tickMin);
-    saveJackpot();
-    renderJackpot();
-  }, 1500);
-}
-
-let playersDrift = 0;
-function renderPlayersOnline() {
-  const base = state.slotsData?.meta?.playersOnlineBase ?? 37;
-  $('players-online').textContent = `${base + playersDrift} spelar just nu`;
-}
-setInterval(() => {
-  if (document.hidden || document.body.dataset.view !== 'casino' || !state.slotsData) return;
-  playersDrift = Math.max(-6, Math.min(9, playersDrift + (Math.random() < 0.5 ? -1 : 1)));
-  renderPlayersOnline();
-}, 7000);
-
-/* ---------- Slot-motor ---------- */
-function weightedSymbol(game) {
-  const total = game.symbols.reduce((a, s) => a + s.weight, 0);
-  let r = Math.random() * total;
-  for (const s of game.symbols) {
-    r -= s.weight;
-    if (r <= 0) return s;
-  }
-  return game.symbols[game.symbols.length - 1];
-}
-
-function cellEl(symbol) {
-  return el('span', { class: 'cell', text: symbol.glyph });
-}
-
-function buildReels(game) {
-  const reels = $('reels');
-  reels.innerHTML = '';
-  for (let i = 0; i < game.reels; i++) {
-    const strip = el('div', { class: 'reel-strip' });
-    for (let rIdx = 0; rIdx < game.rows; rIdx++) strip.append(cellEl(weightedSymbol(game)));
-    reels.append(el('div', { class: 'reel' }, strip));
-  }
-}
-
-function buildPaytable(game) {
-  const pt = $('paytable');
-  pt.innerHTML = '';
-  pt.append(el('div', { class: 'paytable-row paytable-head' },
-    el('span', { text: '' }), el('span', { text: 'Symbol' }),
-    el('span', { class: 'pt-pay', text: '×3' }), el('span', { class: 'pt-pay', text: '×4' }), el('span', { class: 'pt-pay', text: '×5' })));
-  for (const s of [...game.symbols].reverse()) {
-    const isTop = s.id === game.topSymbol;
-    pt.append(el('div', { class: 'paytable-row' },
-      el('span', { 'aria-hidden': 'true', text: s.glyph }),
-      el('span', { text: s.name + (isTop ? ' · jackpottsymbol' : '') }),
-      el('span', { class: 'pt-pay tnum', text: `${s.pay[0]}×` }),
-      el('span', { class: 'pt-pay tnum', text: `${s.pay[1]}×` }),
-      el('span', { class: 'pt-pay tnum', text: isTop ? 'Jackpott' : `${s.pay[2]}×` })));
-  }
-}
-
-const INERT_ROOTS = ['.site-header', '.product-nav', '.layout', '.site-footer'];
-function setBackgroundInert(on) {
-  for (const sel of INERT_ROOTS) {
-    const node = document.querySelector(sel);
-    if (node) node.inert = on;
-  }
-}
-
-function openSlot(game, opener) {
-  state.activeGame = game;
-  state.slotOpener = opener || document.activeElement;
-  const top = game.symbols.find((s) => s.id === game.topSymbol);
-  $('slot-glyph').textContent = top ? top.glyph : '🎰';
-  $('slot-title').textContent = game.name;
-  $('slot-tagline').textContent = `${game.tagline} · ${game.rtpLabel || ''}`.replace(/ · $/, '');
-  $('slot-result').textContent = '';
-  $('slot-result').className = 'slot-result tnum';
-  buildReels(game);
-  buildPaytable(game);
-  $('slot-backdrop').hidden = false;
-  requestAnimationFrame(() => $('slot-backdrop').classList.add('show'));
-  $('slot-modal').hidden = false;
-  document.body.style.overflow = 'hidden';
-  setBackgroundInert(true);
-  updateSpinState();
-  $('slot-title').focus({ preventScroll: true });
-}
-
-function closeSlot() {
-  if (state.spinning) return;
-  setBackgroundInert(false);
-  $('slot-modal').hidden = true;
-  $('slot-backdrop').classList.remove('show');
-  setTimeout(() => { $('slot-backdrop').hidden = true; }, 300);
-  document.body.style.overflow = '';
-  state.activeGame = null;
-  const opener = state.slotOpener;
-  state.slotOpener = null;
-  if (opener && document.contains(opener)) opener.focus({ preventScroll: true });
-}
-
-function updateSpinState() {
-  const btn = $('spin-btn');
-  if (!btn) return;
-  btn.disabled = state.spinning || !state.activeGame || state.balance < state.slotStake;
-  const res = $('slot-result');
-  if (!state.spinning && state.activeGame && state.balance < state.slotStake) {
-    if (!res.textContent) {
-      res.textContent = 'Otillräckligt saldo — återställ via länken i sidfoten.';
-      res.className = 'slot-result tnum';
-    }
-  } else if (!state.spinning && res && res.textContent.startsWith('Otillräckligt')) {
-    res.textContent = '';
-  }
-}
-
-function spin() {
-  const game = state.activeGame;
-  if (!game || state.spinning || state.balance < state.slotStake) return;
-  state.spinning = true;
-  const stake = state.slotStake;
-  state.balance -= stake;
-  saveBalance();
-  renderBalance();
-  const res = $('slot-result');
-  res.textContent = '';
-  res.className = 'slot-result tnum';
-  updateSpinState();
-
-  // Bestäm utfallet: 3 rader × N hjul, vinstlinjen är mittraden
-  const outcome = [];
-  for (let i = 0; i < game.reels; i++) {
-    outcome.push([weightedSymbol(game), weightedSymbol(game), weightedSymbol(game)]);
-  }
-
-  const reelEls = [...document.querySelectorAll('#reels .reel')];
-  const cellH = reelEls[0].querySelector('.cell').getBoundingClientRect().height;
-  const settle = () => settleSpin(game, stake, outcome);
-
-  if (reducedMotion.matches) {
-    reelEls.forEach((reel, i) => {
-      const strip = reel.querySelector('.reel-strip');
-      strip.style.transition = 'none';
-      strip.style.transform = 'none';
-      strip.innerHTML = '';
-      outcome[i].forEach((s) => strip.append(cellEl(s)));
-    });
-    settle();
-    return;
-  }
-
-  let remaining = reelEls.length;
-  reelEls.forEach((reel, i) => {
-    const strip = reel.querySelector('.reel-strip');
-    const current = [...strip.children];
-    const fillerCount = 14 + i * 4;
-    strip.innerHTML = '';
-    current.forEach((c) => strip.append(c));
-    for (let f = 0; f < fillerCount; f++) strip.append(cellEl(weightedSymbol(game)));
-    outcome[i].forEach((s) => strip.append(cellEl(s)));
-
-    const distance = (strip.children.length - game.rows) * cellH;
-    const dur = 800 + i * 160;
-    reel.classList.add('spinning');
-    strip.style.transition = 'none';
-    strip.style.transform = 'translateY(0)';
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      strip.style.transition = `transform ${dur}ms cubic-bezier(0.15, 0.6, 0.25, 1)`;
-      strip.style.transform = `translateY(-${distance}px)`;
-    }));
-    setTimeout(() => {
-      reel.classList.remove('spinning');
-      strip.style.transition = 'none';
-      strip.style.transform = 'none';
-      strip.innerHTML = '';
-      outcome[i].forEach((s) => strip.append(cellEl(s)));
-      remaining -= 1;
-      if (remaining === 0) settle();
-    }, dur + 60);
-  });
-}
-
-function settleSpin(game, stake, outcome) {
-  // Vinstlinje = mittraden, sammanhängande från vänster
-  const line = outcome.map((col) => col[1]);
-  const first = line[0];
-  let count = 1;
-  for (let i = 1; i < line.length; i++) {
-    if (line[i].id === first.id) count++; else break;
-  }
-
-  const res = $('slot-result');
-  let win = 0;
-  let jackpotWon = false;
-
-  if (count >= 3) {
-    win = stake * first.pay[count - 3];
-    if (first.id === game.topSymbol && count === game.reels) {
-      win += Math.round(state.jackpot);
-      jackpotWon = true;
-      state.jackpot = state.slotsData?.meta?.jackpot?.seed ?? 48250;
-      saveJackpot();
-      renderJackpot();
-    }
-    // markera vinstceller på mittraden
-    const reelEls = [...document.querySelectorAll('#reels .reel')];
-    for (let i = 0; i < count; i++) {
-      const midCell = reelEls[i].querySelectorAll('.cell')[1];
-      if (midCell) midCell.classList.add('win-cell');
-    }
-    state.balance += win;
-    saveBalance();
-    renderBalance();
-    if (jackpotWon) {
-      res.textContent = `JACKPOTT! +${fmtKr(win)} — ${count}× ${first.name}`;
-      res.className = 'slot-result tnum jackpot';
-      showToast(`Bindus-jackpotten föll ut: ${fmtKr(win)} (fiktivt, men historiskt).`);
-    } else {
-      res.textContent = `+${fmtKr(win)} — ${count}× ${first.name}`;
-      res.className = 'slot-result tnum win';
-    }
-  } else {
-    res.textContent = 'Ingen vinst — snurra igen.';
-    res.className = 'slot-result tnum';
-  }
-
-  state.spinning = false;
-  updateSpinState();
-}
-
-function initSlotUI() {
-  $('slot-close').addEventListener('click', closeSlot);
-  $('slot-backdrop').addEventListener('click', closeSlot);
-  $('spin-btn').addEventListener('click', spin);
-  document.querySelectorAll('.slot-stake-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      state.slotStake = parseInt(btn.dataset.slotStake, 10);
-      document.querySelectorAll('.slot-stake-btn').forEach((b) => {
-        b.classList.toggle('active', b === btn);
-        b.setAttribute('aria-pressed', String(b === btn));
-      });
-      $('spin-stake').textContent = String(state.slotStake);
-      const res = $('slot-result');
-      if (res.textContent.startsWith('Otillräckligt')) res.textContent = '';
-      updateSpinState();
-    });
-  });
-}
-
 /* ---------- Magnetisk press (endast primär-CTA, pointer:fine) ---------- */
 function initMagneticPress() {
   if (!finePointer.matches || reducedMotion.matches) return;
-  for (const btn of [$('place-btn'), $('spin-btn')]) {
+  for (const btn of [$('place-btn')]) {
     if (!btn) continue;
     btn.addEventListener('pointermove', (e) => {
       const r = btn.getBoundingClientRect();

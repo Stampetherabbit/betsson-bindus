@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Betsson &amp; Bindus — Sportsbook · VM 2026</title>
-  <meta name="description" content="Privat sportsbook och casino för fotbolls-VM 2026 — Jasmine mot Erika. Odds, kupong, slots och leaderboard. Inga riktiga pengar.">
+  <meta name="description" content="Privat sportsbook för fotbolls-VM 2026 — Jasmine mot Erika. Odds, kupong och leaderboard. Inga riktiga pengar.">
   <meta name="theme-color" content="#0E1218">
 
   <meta property="og:type" content="website">
@@ -24,7 +24,7 @@
   <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body data-view="sport">
+<body>
   <a class="skip-link" href="#main">Hoppa till innehållet</a>
 
   <header class="site-header">
@@ -45,13 +45,6 @@
       </div>
     </div>
   </header>
-
-  <nav class="product-nav" aria-label="Produkt">
-    <div class="shell product-nav-inner">
-      <button class="nav-tab active" id="nav-sport" aria-pressed="true" aria-controls="sport-view">Sport</button>
-      <button class="nav-tab" id="nav-casino" aria-pressed="false" aria-controls="casino-view">Casino</button>
-    </div>
-  </nav>
 
   <div class="shell layout">
     <main id="main">
@@ -102,25 +95,6 @@
             <span class="example-badge" id="example-badge" hidden title="Påhittade spel — ersätt i data/bets.json">Exempeldata</span>
           </div>
           <div id="leaderboard"></div>
-        </section>
-      </div>
-
-      <div id="casino-view" hidden>
-        <section class="casino-hero" aria-labelledby="jackpot-label">
-          <div class="jackpot-card">
-            <div class="jackpot-core">
-              <p class="jackpot-label" id="jackpot-label">Bindus-jackpotten</p>
-              <p class="jackpot-value tnum" id="jackpot-value">–</p>
-              <p class="jackpot-sub"><span class="live-dot" aria-hidden="true"></span> <span id="players-online" class="tnum">–</span></p>
-              <p class="jackpot-how">Fem toppsymboler på vinstlinjen tar hela potten. Fiktiva kronor, äkta ära.</p>
-            </div>
-          </div>
-        </section>
-
-        <section class="section" aria-labelledby="casino-spel-title">
-          <h2 class="section-title" id="casino-spel-title">Slots</h2>
-          <div class="casino-grid" id="casino-grid"></div>
-          <p class="casino-note">Fiktiva krediter — samma saldo som sportsboken. Alla spel avgörs lokalt i din webbläsare.</p>
         </section>
       </div>
 
@@ -215,45 +189,6 @@
   </div>
 
   <div class="backdrop" id="backdrop" hidden></div>
-
-  <div class="slot-backdrop" id="slot-backdrop" hidden></div>
-  <div class="slot-modal" id="slot-modal" role="dialog" aria-modal="true" aria-labelledby="slot-title" hidden>
-    <div class="slot-head">
-      <div class="slot-title-wrap">
-        <span class="slot-glyph" id="slot-glyph" aria-hidden="true"></span>
-        <div>
-          <h2 class="slot-title" id="slot-title" tabindex="-1">Slot</h2>
-          <span class="slot-tagline" id="slot-tagline"></span>
-        </div>
-      </div>
-      <button class="slot-close" id="slot-close" aria-label="Stäng spelet">
-        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 4 L12 12 M12 4 L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-
-    <div class="slot-stage">
-      <div class="reels" id="reels" aria-hidden="true"></div>
-      <div class="payline" aria-hidden="true"></div>
-    </div>
-
-    <p class="slot-result tnum" id="slot-result" role="status" aria-live="polite"></p>
-
-    <div class="slot-controls">
-      <div class="slot-stake" role="group" aria-label="Insats per snurr">
-        <button class="quick-btn slot-stake-btn" data-slot-stake="5" aria-pressed="false">5</button>
-        <button class="quick-btn slot-stake-btn active" data-slot-stake="10" aria-pressed="true">10</button>
-        <button class="quick-btn slot-stake-btn" data-slot-stake="25" aria-pressed="false">25</button>
-        <button class="quick-btn slot-stake-btn" data-slot-stake="50" aria-pressed="false">50</button>
-      </div>
-      <button class="spin-btn" id="spin-btn">Snurra · <span class="tnum" id="spin-stake">10</span> kr</button>
-    </div>
-
-    <details class="paytable-box">
-      <summary>Vinsttabell</summary>
-      <div class="paytable" id="paytable"></div>
-    </details>
-  </div>
-
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <footer class="site-footer">

@@ -1,6 +1,6 @@
 # Betsson & Bindus
 
-Privat plattform för vänskaps-betting — Jasmine & Erikas egna VM-bets, plus ett litet casino. Inga riktiga pengar, inga transaktioner. Statisk front-end (HTML/CSS/JS), helt datadriven via JSON.
+Privat plattform för vänskaps-betting — Jasmine & Erikas egna VM-bets. Inga riktiga pengar, inga transaktioner. Statisk front-end (HTML/CSS/JS), helt datadriven via JSON.
 
 **Live:** https://stampetherabbit.github.io/betsson-bindus/
 
@@ -39,13 +39,6 @@ Ett spel = ett objekt i `"bets"`:
 - `result`: `"open"` tills matchen är avgjord, sedan `"won"` eller `"lost"`
 - Leaderboard, träffsäkerhet och netto räknas ut automatiskt från listan.
 - **Exempeldata:** filen levereras med påhittade spel och `"exampleData": true` i `meta` — sajten visar då en liten markering. Ersätt spelen med era riktiga och sätt `"exampleData": false`.
-
-### `data/slots.json` — casinospelen
-
-- Ett spel = ett objekt i `"games"`: namn, tema-färger (`accent`, `artFrom`, `artTo`), symboler och vinsttabell.
-- Per symbol: `weight` = relativ sannolikhet, `pay` = multiplikator av insatsen vid 3/4/5 i rad på vinstlinjen (mittraden, från vänster).
-- `topSymbol`: fem sådana på vinstlinjen vinner **Bindus-jackpotten** (tickar upp i `localStorage`, återställs till `meta.jackpot.seed` vid vinst).
-- Saldot delas med sportsboken — allt är fiktivt.
 
 ### Publicera ändringar
 
