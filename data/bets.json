@@ -1,0 +1,125 @@
+{
+  "meta": {
+    "exampleData": true,
+    "note": "EXEMPELDATA — ersätt med era riktiga spel. Så länge exampleData är true visar sajten en liten 'Exempeldata'-markering. Sätt den till false när ni lagt in era egna spel.",
+    "howTo": "Ett spel = ett objekt i 'bets'. type: 'single' (en rad) eller 'kombi' (flera rader i selections — totalodds = produkten). result: 'open' tills matchen är klar, sedan 'won' eller 'lost'. stake i kronor.",
+    "currency": "kr"
+  },
+  "members": [
+    { "id": "jasmine", "name": "Jasmine", "initial": "J" },
+    { "id": "erika", "name": "Erika", "initial": "E" }
+  ],
+  "bets": [
+    {
+      "id": "j-001",
+      "member": "jasmine",
+      "placedAt": "2026-07-03",
+      "type": "single",
+      "stake": 100,
+      "selections": [
+        { "match": "Brasilien – Norge", "stage": "Åttondelsfinal", "market": "Matchresultat", "pick": "Norge", "odds": 4.50 }
+      ],
+      "result": "won"
+    },
+    {
+      "id": "e-001",
+      "member": "erika",
+      "placedAt": "2026-07-03",
+      "type": "single",
+      "stake": 150,
+      "selections": [
+        { "match": "Brasilien – Norge", "stage": "Åttondelsfinal", "market": "Matchresultat", "pick": "Brasilien", "odds": 1.85 }
+      ],
+      "result": "lost"
+    },
+    {
+      "id": "e-002",
+      "member": "erika",
+      "placedAt": "2026-07-04",
+      "type": "single",
+      "stake": 200,
+      "selections": [
+        { "match": "Mexiko – England", "stage": "Åttondelsfinal", "market": "Matchresultat", "pick": "England", "odds": 1.70 }
+      ],
+      "result": "won"
+    },
+    {
+      "id": "j-002",
+      "member": "jasmine",
+      "placedAt": "2026-07-04",
+      "type": "single",
+      "stake": 50,
+      "selections": [
+        { "match": "Mexiko – England", "stage": "Åttondelsfinal", "market": "Matchresultat", "pick": "Mexiko", "odds": 3.80 }
+      ],
+      "result": "lost"
+    },
+    {
+      "id": "e-003",
+      "member": "erika",
+      "placedAt": "2026-07-05",
+      "type": "single",
+      "stake": 100,
+      "selections": [
+        { "match": "Kanada – Marocko", "stage": "Åttondelsfinal", "market": "Matchresultat", "pick": "Marocko", "odds": 2.30 }
+      ],
+      "result": "won"
+    },
+    {
+      "id": "j-003",
+      "member": "jasmine",
+      "placedAt": "2026-07-05",
+      "type": "single",
+      "stake": 150,
+      "selections": [
+        { "match": "Portugal – Spanien", "stage": "Åttondelsfinal", "market": "Matchresultat", "pick": "Spanien", "odds": 1.95 }
+      ],
+      "result": "won"
+    },
+    {
+      "id": "j-004",
+      "member": "jasmine",
+      "placedAt": "2026-07-06",
+      "type": "kombi",
+      "stake": 50,
+      "selections": [
+        { "match": "USA – Belgien", "stage": "Åttondelsfinal", "market": "Matchresultat", "pick": "Belgien", "odds": 2.05 },
+        { "match": "Argentina – Egypten", "stage": "Åttondelsfinal", "market": "Matchresultat", "pick": "Argentina", "odds": 1.45 }
+      ],
+      "result": "won"
+    },
+    {
+      "id": "e-004",
+      "member": "erika",
+      "placedAt": "2026-07-06",
+      "type": "single",
+      "stake": 100,
+      "selections": [
+        { "match": "Paraguay – Frankrike", "stage": "Åttondelsfinal", "market": "Matchresultat", "pick": "Oavgjort", "odds": 3.40 }
+      ],
+      "result": "lost"
+    },
+    {
+      "id": "j-005",
+      "member": "jasmine",
+      "placedAt": "2026-07-07",
+      "type": "single",
+      "stake": 50,
+      "selections": [
+        { "match": "Frankrike – Marocko", "stage": "Kvartsfinal", "market": "Matchresultat", "pick": "Marocko", "odds": 5.40 }
+      ],
+      "result": "open"
+    },
+    {
+      "id": "e-005",
+      "member": "erika",
+      "placedAt": "2026-07-07",
+      "type": "single",
+      "stake": 100,
+      "selections": [
+        { "match": "Norge – England", "stage": "Kvartsfinal", "market": "Matchresultat", "pick": "Norge", "odds": 3.15 }
+      ],
+      "result": "open"
+    }
+  ]
+}
