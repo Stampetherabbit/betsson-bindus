@@ -57,6 +57,8 @@
   --e-snap:   cubic-bezier(0.2, 0, 0, 1);
   --e-spring: cubic-bezier(0.32, 0.72, 0, 1);
   --e-pop:    cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --d-micro: 120ms;
   --d-add:   200ms;
   --d-sheet: 300ms;
@@ -66,7 +68,8 @@
   --maxw: 1200px;
   --panel-w: 340px;
   --header-h: 56px;
-  --sticky-top: 72px;
+  --nav-h: 44px;
+  --sticky-top: 116px;
 }
 
 /* ---------- Reset-lite ---------- */
@@ -861,7 +864,7 @@ main > * + * { margin-top: var(--s8); }
 .backdrop.show { opacity: 1; }
 
 .toast {
-  position: fixed; left: 50%; bottom: 84px; z-index: 60;
+  position: fixed; left: 50%; bottom: 84px; z-index: 80;
   transform: translateX(-50%);
   background: var(--surface-raised);
   border: 1px solid var(--border-strong);
@@ -915,6 +918,341 @@ main > * + * { margin-top: var(--s8); }
   .outright-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
+/* ============================================================
+   FAS 2 — Maximering: produkt-nav, bezel, bracket, flip,
+   reveal, skeleton, grain, casino-shell, slot-motor
+   ============================================================ */
+
+/* ---------- Grain overlay ---------- */
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: .03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+body[data-view="casino"]::after { opacity: .05; }
+
+/* ---------- Produkt-nav (Sport | Casino) ---------- */
+.product-nav {
+  position: sticky; top: var(--header-h); z-index: 25;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.product-nav-inner {
+  display: flex; gap: var(--s6);
+  height: var(--nav-h);
+}
+.nav-tab {
+  font-size: 15px; font-weight: 500;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  padding: 0 var(--s1);
+  min-height: var(--nav-h);
+  transition: color var(--d-micro) var(--e-snap), border-color var(--d-micro) var(--e-snap);
+}
+.nav-tab:hover { color: var(--text-secondary); }
+.nav-tab.active { color: var(--text-primary); border-bottom-color: var(--accent); }
+
+/* Vy-växling */
+body[data-view="casino"] #sport-view { display: none; }
+body[data-view="sport"] #casino-view { display: none; }
+
+/* ---------- Hero: double-bezel-kärna + bracket ---------- */
+.hero-core {
+  margin-top: var(--s5);
+  padding: var(--s5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+.hero-core .countdown-wrap { margin-top: 0; }
+
+.bracket {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--s3);
+  margin-top: var(--s5);
+  align-items: center;
+}
+.bracket-col { display: flex; flex-direction: column; gap: var(--s2); }
+.bracket-col-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--text-muted);
+  margin-bottom: var(--s1);
+}
+.bracket-node {
+  display: flex; flex-direction: column; gap: 2px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-odds);
+  border-radius: var(--r-btn);
+  padding: var(--s2) var(--s3);
+  position: relative;
+}
+.bracket-node.tbd { border-style: dashed; }
+.bracket-node.final-node { border-color: var(--border-strong); }
+.bracket-node.final-node::after {
+  content: ""; position: absolute; left: var(--s3); right: var(--s3); bottom: -1px;
+  height: 2px; background: var(--accent); border-radius: 1px;
+}
+.bracket-team {
+  display: flex; align-items: center; gap: var(--s2);
+  font-size: 12px; font-weight: 500; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.bracket-team.tbd { color: var(--text-muted); font-weight: 400; }
+.bracket-team .bracket-flag { font-size: 13px; flex: none; }
+.bracket-meta { font-size: 10px; color: var(--text-muted); letter-spacing: .04em; }
+
+@media (max-width: 639px) {
+  .bracket { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 72%;
+    overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none;
+    mask-image: linear-gradient(90deg, #000 92%, transparent);
+  }
+  .bracket::-webkit-scrollbar { display: none; }
+  .bracket-col { scroll-snap-align: start; }
+}
+
+/* ---------- Odds odometer-flip ---------- */
+.odds-flip { position: relative; display: inline-block; overflow: hidden; height: 1.2em; }
+.odds-flip .ov { display: block; line-height: 1.2; }
+.odds-flip .ov-old { position: absolute; inset: 0; }
+.ov-old.roll-up   { animation: ov-out-up   400ms var(--e-snap) forwards; }
+.ov-new.roll-up   { animation: ov-in-up    400ms var(--e-snap); }
+.ov-old.roll-down { animation: ov-out-down 400ms var(--e-snap) forwards; }
+.ov-new.roll-down { animation: ov-in-down  400ms var(--e-snap); }
+@keyframes ov-out-up   { to { transform: translateY(-100%); opacity: 0; filter: blur(2px); } }
+@keyframes ov-in-up    { from { transform: translateY(100%); opacity: 0; filter: blur(2px); } to { transform: none; opacity: 1; filter: none; } }
+@keyframes ov-out-down { to { transform: translateY(100%); opacity: 0; filter: blur(2px); } }
+@keyframes ov-in-down  { from { transform: translateY(-100%); opacity: 0; filter: blur(2px); } to { transform: none; opacity: 1; filter: none; } }
+
+/* ---------- Scroll-reveal ---------- */
+.reveal { opacity: 0; transform: translateY(16px); filter: blur(6px); }
+.reveal.in {
+  opacity: 1; transform: none; filter: none;
+  transition:
+    opacity 640ms var(--ease-out-expo) calc(var(--ri, 0) * 45ms),
+    transform 640ms var(--ease-out-expo) calc(var(--ri, 0) * 45ms),
+    filter 640ms var(--ease-out-expo) calc(var(--ri, 0) * 45ms);
+}
+
+/* ---------- Skeleton shimmer ---------- */
+.skeleton {
+  border-radius: var(--r-card);
+  background: linear-gradient(90deg, var(--surface) 0%, var(--surface-raised) 50%, var(--surface) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+  pointer-events: none;
+  border: 1px solid var(--border);
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+.skeleton-card { height: 272px; }
+.skeleton-leaderboard { height: 520px; }
+.skeleton-row { height: 56px; border-radius: var(--r-btn); }
+
+/* ---------- Win-share glide ---------- */
+.winshare-fill { transition: width 600ms var(--e-spring); }
+
+/* ---------- Outright-block (flera marknader) ---------- */
+.outright-block + .outright-block { margin-top: var(--s6); }
+.outright-block-title {
+  display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2);
+  font-size: 13px; font-weight: 500; color: var(--text-primary);
+  margin-bottom: var(--s2);
+}
+.outright-block-note { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); font-weight: 400; }
+
+/* ---------- Casino: jackpot ---------- */
+.casino-hero { position: relative; }
+.jackpot-card {
+  padding: 2px;
+  border-radius: var(--r-lg);
+  background: conic-gradient(from 210deg, var(--accent) 0 12%, var(--border) 12% 100%);
+}
+.jackpot-core {
+  background: var(--surface);
+  border-radius: calc(var(--r-lg) - 2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+  padding: var(--s6);
+  text-align: center;
+}
+.jackpot-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--text-muted);
+}
+.jackpot-value {
+  font-size: 40px; font-weight: 500; color: var(--text-primary);
+  line-height: 1.15;
+  margin-top: var(--s2);
+}
+.jackpot-sub {
+  display: flex; align-items: center; justify-content: center; gap: var(--s2);
+  font-size: 13px; color: var(--text-secondary);
+  margin-top: var(--s2);
+}
+.jackpot-how { font-size: 12px; color: var(--text-muted); margin-top: var(--s3); }
+
+/* ---------- Casino: spel-tiles ---------- */
+.casino-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--s3);
+}
+.slot-tile {
+  position: relative;
+  border-radius: var(--r-card);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  display: block; width: 100%;
+  perspective: 800px;
+  transition: border-color var(--d-micro) var(--e-snap), transform 180ms var(--e-snap);
+  text-align: left;
+}
+.slot-tile:hover { border-color: var(--border-strong); transform: scale(1.02); }
+.slot-tile:active { transform: scale(0.98); }
+.tile-inner {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: var(--s4);
+  background: linear-gradient(150deg, var(--art-from, #1A1F27), var(--art-to, #10141B));
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+}
+.tile-glyphs { font-size: 40px; line-height: 1; letter-spacing: -6px; }
+.tile-name { font-size: 17px; font-weight: 500; color: var(--text-primary); }
+.tile-meta { font-size: 12px; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center; gap: var(--s2); }
+.tile-play {
+  display: inline-grid; place-items: center;
+  min-width: 64px; height: 32px; padding-inline: var(--s3);
+  border-radius: var(--r-pill);
+  background: var(--accent); color: var(--on-accent);
+  font-size: 13px; font-weight: 500;
+}
+.casino-note { font-size: 12px; color: var(--text-muted); margin-top: var(--s4); }
+
+/* ---------- Slot-modal ---------- */
+.slot-backdrop {
+  position: fixed; inset: 0; z-index: 65;
+  background: rgba(11, 14, 20, .72);
+  opacity: 0;
+  transition: opacity var(--d-sheet) var(--e-snap);
+}
+.slot-backdrop.show { opacity: 1; }
+
+.slot-modal {
+  position: fixed; z-index: 70;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(94vw, 560px);
+  max-height: 92dvh;
+  overflow-y: auto;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  padding: var(--s4) var(--s4) var(--s5);
+  animation: modal-in 250ms var(--e-spring);
+}
+@keyframes modal-in { from { opacity: 0; transform: translate(-50%, -50%) scale(.94); } }
+
+.slot-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); margin-bottom: var(--s4); }
+.slot-title-wrap { display: flex; align-items: center; gap: var(--s3); min-width: 0; }
+.slot-glyph { font-size: 28px; line-height: 1; flex: none; }
+.slot-title { font-size: 17px; font-weight: 500; color: var(--text-primary); line-height: 1.2; }
+.slot-tagline { font-size: 12px; color: var(--text-muted); }
+.slot-close {
+  width: 36px; height: 36px; border-radius: var(--r-btn); flex: none;
+  display: grid; place-items: center;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  transition: color var(--d-micro) var(--e-snap), border-color var(--d-micro) var(--e-snap);
+}
+.slot-close:hover { color: var(--text-primary); border-color: var(--border-strong); }
+
+.slot-stage { position: relative; }
+.reels {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--s2);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-odds);
+  border-radius: var(--r-card);
+  padding: var(--s3);
+}
+.reel { overflow: hidden; height: 168px; border-radius: var(--r-btn); background: var(--surface); position: relative; }
+.reel-strip { display: flex; flex-direction: column; }
+.reel.spinning .reel-strip { filter: blur(3px); will-change: transform; }
+.cell {
+  height: 56px; flex: none;
+  display: grid; place-items: center;
+  font-size: 28px; line-height: 1;
+}
+.cell.win-cell { animation: win-pulse 400ms var(--e-snap) 2; }
+@keyframes win-pulse { 50% { background: var(--accent-soft); } }
+.payline {
+  position: absolute; left: var(--s1); right: var(--s1); top: 50%;
+  height: 56px; transform: translateY(-50%);
+  border-block: 1px dashed var(--border-strong);
+  pointer-events: none;
+  border-radius: 2px;
+}
+
+.slot-result {
+  min-height: 22px;
+  margin-top: var(--s3);
+  font-size: 15px; font-weight: 500; color: var(--text-secondary);
+  text-align: center;
+}
+.slot-result.win { color: var(--positive); }
+.slot-result.jackpot { color: var(--accent); }
+
+.slot-controls {
+  display: flex; align-items: center; gap: var(--s3);
+  margin-top: var(--s3);
+}
+.slot-stake { display: grid; grid-template-columns: repeat(4, 44px); gap: var(--s1); }
+.slot-stake-btn.active { border-color: var(--accent); color: var(--text-primary); }
+.spin-btn {
+  flex: 1;
+  height: 52px;
+  border-radius: var(--r-btn);
+  background: var(--accent); color: var(--on-accent);
+  font-size: 17px; font-weight: 500;
+  transition: transform 90ms var(--e-snap), opacity var(--d-micro) var(--e-snap);
+}
+.spin-btn:hover { opacity: .92; }
+.spin-btn:active { transform: scale(0.97); }
+.spin-btn:disabled { opacity: .4; cursor: default; }
+
+.paytable-box { margin-top: var(--s4); }
+.paytable-box summary {
+  font-size: 13px; color: var(--text-muted); cursor: pointer;
+  min-height: 44px; display: flex; align-items: center;
+}
+.paytable-box summary:hover { color: var(--text-secondary); }
+.paytable { display: flex; flex-direction: column; gap: var(--s1); padding-top: var(--s2); }
+.paytable-row {
+  display: grid; grid-template-columns: 36px 1fr auto auto auto;
+  gap: var(--s2); align-items: center;
+  font-size: 13px; color: var(--text-secondary);
+  padding: var(--s1) var(--s2);
+  border-bottom: 1px dashed var(--border-odds);
+}
+.paytable-row .pt-pay { color: var(--text-primary); font-weight: 500; min-width: 44px; text-align: right; }
+.paytable-head { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+
+@media (max-width: 479px) {
+  .reel { height: 132px; }
+  .cell { height: 44px; font-size: 22px; }
+  .payline { height: 44px; }
+  .slot-controls { flex-direction: column; align-items: stretch; }
+  .slot-stake { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ---------- Magnetisk press ---------- */
+.place-btn, .spin-btn { translate: var(--press-x, 0) var(--press-y, 0); }
+
 /* ---------- Reducerad rörelse ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -924,4 +1262,9 @@ main > * + * { margin-top: var(--s8); }
   }
   .live-dot, .leader-pill { animation: none; }
   .betslip { transition: none; }
+  .reveal { opacity: 1; transform: none; filter: none; }
+  .skeleton { animation: none; background: var(--surface-raised); }
+  .reel.spinning .reel-strip { filter: none; }
+  .tile-inner { transform: none !important; }
+  .place-btn, .spin-btn { translate: none; }
 }

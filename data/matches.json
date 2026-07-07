@@ -1,7 +1,7 @@
 {
   "meta": {
-    "dataVersion": "2026-07-07",
-    "verifiedAt": "2026-07-07",
+    "dataVersion": "2026-07-08",
+    "verifiedAt": "2026-07-08",
     "source": "Al Jazeera / ESPN 2026-07-07 — kvartsfinalister bekräftade: Frankrike, Marocko, Spanien, Belgien, Norge, England, Argentina. Schweiz–Colombia sista åttondelen.",
     "note": "Uppdatera efter varje match: sätt status till 'finished' + fyll i result, eller redigera odds. Sajten renderar allt härifrån — ingen kodändring behövs.",
     "timezone": "Europe/Stockholm",
@@ -76,6 +76,15 @@
             { "id": "qf1-fra-mar--over", "label": "Över 2.5", "name": "Över 2.5 mål", "odds": 2.35, "openingOdds": 2.30 },
             { "id": "qf1-fra-mar--under", "label": "Under 2.5", "name": "Under 2.5 mål", "odds": 1.58, "openingOdds": 1.60 }
           ]
+        },
+        {
+          "id": "btts",
+          "name": "Båda lagen gör mål",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf1-fra-mar--btts-ja", "label": "Ja", "name": "Båda gör mål — Ja", "odds": 2.10, "openingOdds": 2.05 },
+            { "id": "qf1-fra-mar--btts-nej", "label": "Nej", "name": "Båda gör mål — Nej", "odds": 1.66, "openingOdds": 1.70 }
+          ]
         }
       ]
     },
@@ -109,6 +118,15 @@
             { "id": "qf2-esp-bel--over", "label": "Över 2.5", "name": "Över 2.5 mål", "odds": 1.85, "openingOdds": 1.90 },
             { "id": "qf2-esp-bel--under", "label": "Under 2.5", "name": "Under 2.5 mål", "odds": 1.95, "openingOdds": 1.90 }
           ]
+        },
+        {
+          "id": "btts",
+          "name": "Båda lagen gör mål",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf2-esp-bel--btts-ja", "label": "Ja", "name": "Båda gör mål — Ja", "odds": 1.75, "openingOdds": 1.80 },
+            { "id": "qf2-esp-bel--btts-nej", "label": "Nej", "name": "Båda gör mål — Nej", "odds": 2.00, "openingOdds": 1.95 }
+          ]
         }
       ]
     },
@@ -141,6 +159,15 @@
           "selections": [
             { "id": "qf3-nor-eng--over", "label": "Över 2.5", "name": "Över 2.5 mål", "odds": 1.90, "openingOdds": 1.95 },
             { "id": "qf3-nor-eng--under", "label": "Under 2.5", "name": "Under 2.5 mål", "odds": 1.90, "openingOdds": 1.85 }
+          ]
+        },
+        {
+          "id": "btts",
+          "name": "Båda lagen gör mål",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf3-nor-eng--btts-ja", "label": "Ja", "name": "Båda gör mål — Ja", "odds": 1.62, "openingOdds": 1.66 },
+            { "id": "qf3-nor-eng--btts-nej", "label": "Nej", "name": "Båda gör mål — Nej", "odds": 2.20, "openingOdds": 2.15 }
           ]
         }
       ]
@@ -214,6 +241,38 @@
         { "id": "outright--mar", "name": "Marocko", "code": "MAR", "odds": 17.00, "openingOdds": 19.00 },
         { "id": "outright--col", "name": "Colombia", "code": "COL", "odds": 26.00, "openingOdds": 28.00 },
         { "id": "outright--sui", "name": "Schweiz", "code": "SUI", "odds": 34.00, "openingOdds": 32.00 }
+      ]
+    },
+    {
+      "id": "outright-scorer",
+      "name": "Skyttekung — VM 2026",
+      "note": "Flest mål i turneringen",
+      "selections": [
+        { "id": "scorer--mbappe", "name": "Kylian Mbappé", "code": "FRA", "odds": 3.40, "openingOdds": 3.60 },
+        { "id": "scorer--haaland", "name": "Erling Haaland", "code": "NOR", "odds": 3.75, "openingOdds": 4.50 },
+        { "id": "scorer--messi", "name": "Lionel Messi", "code": "ARG", "odds": 4.20, "openingOdds": 4.00 },
+        { "id": "scorer--kane", "name": "Harry Kane", "code": "ENG", "odds": 6.00, "openingOdds": 5.50 },
+        { "id": "scorer--yamal", "name": "Lamine Yamal", "code": "ESP", "odds": 15.00, "openingOdds": 17.00 },
+        { "id": "scorer--bellingham", "name": "Jude Bellingham", "code": "ENG", "odds": 21.00, "openingOdds": 19.00 },
+        { "id": "scorer--nusa", "name": "Antonio Nusa", "code": "NOR", "odds": 26.00, "openingOdds": 34.00 },
+        { "id": "scorer--olmo", "name": "Dani Olmo", "code": "ESP", "odds": 29.00, "openingOdds": 26.00 },
+        { "id": "scorer--hakimi", "name": "Achraf Hakimi", "code": "MAR", "odds": 41.00, "openingOdds": 36.00 }
+      ]
+    },
+    {
+      "id": "outright-finalist",
+      "name": "Når finalen — VM 2026",
+      "note": "Spelar final 19 juli",
+      "selections": [
+        { "id": "final--fra", "name": "Frankrike", "code": "FRA", "odds": 2.10, "openingOdds": 2.20 },
+        { "id": "final--esp", "name": "Spanien", "code": "ESP", "odds": 2.20, "openingOdds": 2.10 },
+        { "id": "final--eng", "name": "England", "code": "ENG", "odds": 2.75, "openingOdds": 2.90 },
+        { "id": "final--arg", "name": "Argentina", "code": "ARG", "odds": 3.40, "openingOdds": 3.25 },
+        { "id": "final--nor", "name": "Norge", "code": "NOR", "odds": 5.50, "openingOdds": 7.00 },
+        { "id": "final--bel", "name": "Belgien", "code": "BEL", "odds": 7.00, "openingOdds": 6.50 },
+        { "id": "final--mar", "name": "Marocko", "code": "MAR", "odds": 9.00, "openingOdds": 10.00 },
+        { "id": "final--col", "name": "Colombia", "code": "COL", "odds": 13.00, "openingOdds": 14.00 },
+        { "id": "final--sui", "name": "Schweiz", "code": "SUI", "odds": 17.00, "openingOdds": 16.00 }
       ]
     }
   ]
