@@ -275,7 +275,12 @@
 
   /* Bracket */
   .bracket { display: grid; grid-template-columns: 1.15fr 1fr 1.15fr; gap: 18px; align-items: center; margin-top: 72px; }
-  @media (min-width: 1200px) { .bracket { margin-right: 392px; } }
+  /* §pyramid: "Ditt bet"-panelen är fixed mot VIEWPORT-högerkanten (364px bred, right:22) och ligger på desktop
+     ALLTID uppe (även "stängd") → den äter höger-remsan över hela bracket-höjden. En statisk reservation slösar
+     bredd på breda skärmar och räcker inte på 1200. Reservationen skalar därför med viewporten så pyramiden nätt
+     och jämnt håller sig vänster om panelen: R = 958 − 50vw (0 när panelen klarar shell:en, ~1916px+). Ju bredare
+     skärm desto mer luft åt de fyra KF-korten. Se rapport-motivering. */
+  @media (min-width: 1200px) { .bracket { margin-right: max(0px, calc(958px - 50vw)); } }
   .bcol { display: flex; flex-direction: column; gap: 12px; }
   /* Scenrubriker (v6): designade etiketter med guld-hairline-ornament (vigneron-eyebrow, kraftfullare) */
   .bcol-l {
@@ -295,30 +300,79 @@
     border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
     border-radius: 18px; padding: 5px;
   }
-  /* Connector-rälsen (≥861px) */
+  /* Connector-band (mobil: dolt — vertikal stack utan connectors, exakt som förr) */
+  .bconn { display: none; }
+  /* ===== Desktop-pyramid (≥861px): topp-ner-bracket + animerade armbågs-connectors =====
+     Ersätter de gamla horisontella 3-kolumns-rälsarna. Mobil (≤860) rörs INTE — allt nedan är ≥861-scopat.
+     Geometri: KF-raden (4 kort) → armbågar ner → SF-raden (2 kort centrerade under paren) → armbåge ner → finalen.
+     Connectorerna bor i .bsemi/.bfinal:s padding-top-zon (absolut overlay) så rad-rubriken kan sväva i den
+     centrala dödzonen mellan armbågarna UTAN att bryta stammen ner till kortet. --pyr-gap måste vara identiskt
+     i KF-gridet (4-col), SF-gridet (2-col) och connector-gridet → par-mittpunkterna hamnar EXAKT över SF-korten
+     (invarianten: KF col0+gap+col1 spänner exakt en halva; drop-offset = gap/4 konstant, oberoende av bredd). */
   @media (min-width: 861px) {
-    .bqf .node-shell::after {
-      content: ""; position: absolute; right: -19px; top: 50%;
-      width: 19px; height: 1px; border-radius: 1px;
-      background: linear-gradient(90deg, var(--line-2), var(--acc-deep));
-      transform: scaleX(0); transform-origin: left center;
-      transition: transform var(--dur-4) var(--ease-out) calc(var(--i, 0) * 70ms);
+    /* Nedräkningen flyttad från höger-orphan till vänster under rubriken (Lucas v10) — pyramiden äger scenen under */
+    .hero-row { flex-direction: column; align-items: flex-start; gap: 18px; }
+    .hero p { text-align: left; }
+
+    .bracket {
+      --pyr-gap: 16px;
+      grid-template-columns: 1fr; gap: 0; align-items: stretch;
     }
-    .bqf .node-shell.in::after { transform: scaleX(1); }
-    .bcol:not(.bqf) .node-shell::before,
-    .final-shell::before {
-      content: ""; position: absolute; left: -19px; top: 50%;
-      width: 19px; height: 1px; border-radius: 1px;
-      background: linear-gradient(90deg, var(--acc-deep), var(--line-2));
-      transform: scaleX(0); transform-origin: right center;
-      transition: transform var(--dur-4) var(--ease-out) calc(var(--i, 0) * 70ms);
+
+    /* KF-raden: 4 kort bredvid varandra, rubrik spänner hela raden */
+    .bcol.bqf { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--pyr-gap); align-items: start; }
+    .bqf .bcol-l { grid-column: 1 / -1; justify-content: center; margin-bottom: 2px; }
+    /* §pyramid: 4-upp-korten är smalare än enkolumns-läget → trimmade innermått så oddsknappar/datum andas.
+       Metan stackas (etikett över datum) i st. f. space-between så stadsnamn + tid aldrig krockar på ~180px. */
+    .bqf .node { border: 1px solid transparent; } /* hot-ramen overridar bara färgen → alla fyra korten lika höga, dropparna dockar flush */
+    .bqf .node { padding: 11px 12px; }
+    .bqf .meta { flex-direction: column; align-items: flex-start; gap: 3px; margin-bottom: 7px; letter-spacing: .1em; }
+    .bqf .oddsrow { gap: 5px; margin-top: 9px; }
+    .bqf .oc { height: 42px; }
+
+    /* SF-raden: 2 kort centrerade under sina KF-par; connector-zon ovanför */
+    .bcol.bsemi {
+      position: relative; padding-top: 120px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--pyr-gap); align-items: start;
     }
-    .bcol:not(.bqf) .node-shell.in::before,
-    .final-shell.in::before { transform: scaleX(1); }
-    .final-shell::after {
-      content: ""; position: absolute; left: -20px; top: 50%; margin-top: -1.5px;
-      width: 3px; height: 3px; border-radius: 50%; background: var(--acc); z-index: 2;
+    .bsemi .bcol-l { position: absolute; top: 44px; left: 0; right: 0; margin: 0; justify-content: center; z-index: 3; font-size: .875rem; }
+    .bsemi .node-shell { width: 100%; max-width: 264px; margin-inline: auto; }
+
+    /* Finalen: ett kort centrerat; connector-zon ovanför */
+    .bcol.bfinal { position: relative; padding-top: 120px; display: block; }
+    .bfinal .bcol-l { position: absolute; top: 12px; left: 0; right: 0; margin: 0; justify-content: center; z-index: 3; font-size: .875rem; }
+    .bfinal .final-shell { max-width: 300px; margin-inline: auto; }
+
+    /* Connector-zonerna (absolut overlay i padding-top) */
+    .bconn {
+      display: block; position: absolute; top: 0; left: 0; right: 0; height: 120px;
+      z-index: 1; pointer-events: none;
     }
+    .bconn-1 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--pyr-gap); }
+    .pelbow { position: relative; height: 100%; }
+    .pc-drop, .pc-rail, .pc-stem { position: absolute; border-radius: 1px; }
+    /* Vertikala segment (armbågens droppar + stam): gyllene hairline, växer nedåt */
+    .pc-drop, .pc-stem {
+      width: 1.6px; background: linear-gradient(180deg, color-mix(in srgb, var(--acc) 48%, transparent), var(--acc-deep));
+      box-shadow: 0 0 7px rgba(var(--acc-rgb), .22);
+      transform: translateX(-50%) scaleY(0); transform-origin: top center;
+    }
+    /* Horisontell samlingsräls: växer ut från mitten mot båda dropparna */
+    .pc-rail {
+      height: 1.6px; background: linear-gradient(90deg, var(--acc-deep), var(--acc) 50%, var(--acc-deep));
+      box-shadow: 0 0 7px rgba(var(--acc-rgb), .18);
+      transform: scaleX(0); transform-origin: center;
+    }
+    .pc-drop { top: 0; height: 46px; }
+    .pc-drop.l { left: calc(25% - var(--pyr-gap) / 4); }
+    .pc-drop.r { left: calc(75% + var(--pyr-gap) / 4); }
+    .pc-rail  { top: 46px; left: calc(25% - var(--pyr-gap) / 4); width: calc(50% + var(--pyr-gap) / 2); }
+    .pc-stem  { top: 46px; bottom: 0; left: 50%; }
+    /* Reveal: droppar → räls → stam, staggrat; följer .rv/.in-koreografin (IntersectionObserver) */
+    .pc-drop, .pc-rail, .pc-stem { transition: transform var(--dur-4) var(--ease-out); }
+    .bconn.in .pc-drop { transform: translateX(-50%) scaleY(1); transition-delay: calc(var(--i, 0) * 70ms); }
+    .bconn.in .pc-rail { transform: scaleX(1);                    transition-delay: calc(var(--i, 0) * 70ms + 150ms); }
+    .bconn.in .pc-stem { transform: translateX(-50%) scaleY(1);   transition-delay: calc(var(--i, 0) * 70ms + 300ms); }
   }
   .node { background: var(--surf); background-color: var(--p1); border-radius: 13px; padding: 12px 14px; box-shadow: inset 0 1px 0 color-mix(in srgb, var(--ink) 7%, transparent); position: relative; }
   .node.hot { border: 1px solid rgba(var(--acc-rgb), .45); box-shadow: inset 0 1px 0 color-mix(in srgb, var(--ink) 7%, transparent), 0 0 22px rgba(var(--acc-rgb), .14); animation: breathe 3.4s var(--ease) infinite; }
@@ -1137,6 +1191,9 @@
     .halo-pulse { opacity: 0 !important; }
     .slip { opacity: 1; transform: none; }
     .receipt-mini .ok path { stroke-dashoffset: 0; }
+    /* §pyramid: connector-armbågarna → statiska hela linjer (ingen scaleX/Y-reveal) */
+    .pc-drop, .pc-stem { transform: translateX(-50%) scaleY(1); }
+    .pc-rail { transform: scaleX(1); }
     /* P13-fallbacks: andande kant → statisk mellanton; cyklern → bara Frankrike-raden */
     .node.await { border-color: color-mix(in srgb, var(--acc) 16%, var(--line)); }
     .fav { opacity: 0; transform: none; }
@@ -1352,7 +1409,11 @@
         </div></div>
       </div>
 
-      <div class="bcol">
+      <div class="bcol bsemi">
+        <div class="bconn bconn-1 rv" style="--i:7" aria-hidden="true">
+          <div class="pelbow"><span class="pc-drop l"></span><span class="pc-drop r"></span><span class="pc-rail"></span><span class="pc-stem"></span></div>
+          <div class="pelbow"><span class="pc-drop l"></span><span class="pc-drop r"></span><span class="pc-rail"></span><span class="pc-stem"></span></div>
+        </div>
         <span class="bcol-l rv" style="--i:4"><span class="bcol-t">Semifinaler</span></span>
         <div class="node-shell rv" style="--i:5"><div class="node await">
           <div class="meta"><span>SF1 · Dallas</span><b>TIS 14/7</b></div>
@@ -1384,7 +1445,10 @@
         </div></div>
       </div>
 
-      <div class="bcol">
+      <div class="bcol bfinal">
+        <div class="bconn bconn-2 rv" style="--i:8" aria-hidden="true">
+          <div class="pelbow"><span class="pc-drop l"></span><span class="pc-drop r"></span><span class="pc-rail"></span><span class="pc-stem"></span></div>
+        </div>
         <span class="bcol-l rv" style="--i:5"><span class="bcol-t">Finalen</span></span>
         <div class="final-shell rv" style="--i:6"><div class="final">
           <div class="catring">
