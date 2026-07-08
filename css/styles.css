@@ -1036,6 +1036,83 @@ body::after {
 }
 .outright-block-note { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); font-weight: 400; }
 
+/* ---------- WOW-trappan — kupongens sanktionerade drama ----------
+   data-wow på .betslip (0–3) styrs av total insats; hög kombi-multipel
+   (≥10×) eldar på ett steg. Hettan uttrycks som glöd, aldrig som ord. */
+
+.payout-value {
+  transition: font-size 300ms var(--e-spring), text-shadow 300ms var(--e-snap), color 300ms var(--e-snap);
+}
+.payout-box {
+  transition: border-color 300ms var(--e-snap), box-shadow 300ms var(--e-snap);
+}
+.place-btn { transition: transform 90ms var(--e-snap), opacity var(--d-micro) var(--e-snap), box-shadow 300ms var(--e-snap), background 300ms var(--e-snap); }
+
+/* T1 · 100–249 kr — uppvärmd */
+[data-wow="1"] .payout-box { border-color: rgba(255, 90, 31, .4); }
+[data-wow="1"] .payout-value { font-size: 26px; }
+
+/* T2 · 250–999 kr — going big */
+[data-wow="2"] .payout-box {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(255, 90, 31, .2), 0 0 24px rgba(255, 90, 31, .14);
+}
+[data-wow="2"] .payout-value { font-size: 30px; color: #FFE3D2; text-shadow: 0 0 18px rgba(255, 110, 20, .45); }
+[data-wow="2"] .place-btn {
+  background: linear-gradient(135deg, #FF6300, #FF8A00);
+  box-shadow: 0 0 22px rgba(255, 110, 20, .35);
+}
+
+/* T3 · 1000+ kr — fullt drama */
+[data-wow="3"] .payout-box {
+  border-color: var(--accent);
+  animation: ember-breathe 2.4s var(--e-snap) infinite;
+}
+[data-wow="3"] .payout-value {
+  font-size: 36px; line-height: 1.1;
+  color: #FFF3EC;
+  text-shadow: 0 0 10px rgba(255, 140, 60, .8), 0 0 32px rgba(255, 90, 31, .5);
+}
+[data-wow="3"] .betslip-panel {
+  border-color: rgba(255, 90, 31, .5);
+  box-shadow: 0 0 0 1px rgba(255, 90, 31, .25), 0 0 48px rgba(255, 90, 31, .16);
+}
+[data-wow="3"] .place-btn {
+  background: linear-gradient(135deg, #FF6300, #FF9A2E);
+  animation: btn-heat 1.8s var(--e-snap) infinite;
+}
+@keyframes ember-breathe {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(255, 90, 31, .25), 0 0 22px rgba(255, 90, 31, .16); }
+  50%      { box-shadow: 0 0 0 1px rgba(255, 90, 31, .4),  0 0 40px rgba(255, 90, 31, .3); }
+}
+@keyframes btn-heat {
+  0%, 100% { box-shadow: 0 0 18px rgba(255, 110, 20, .35); }
+  50%      { box-shadow: 0 0 34px rgba(255, 110, 20, .6); }
+}
+
+/* Mobil-baren ärver hettan */
+[data-wow="2"] .slip-bar-payout, [data-wow="3"] .slip-bar-payout {
+  color: #FFE3D2; text-shadow: 0 0 12px rgba(255, 110, 20, .4);
+}
+
+/* Kombi-multipeln — ju mer X, desto hetare siffra */
+.slip-total-odds .tnum { transition: font-size 300ms var(--e-spring), text-shadow 300ms var(--e-snap), color 300ms var(--e-snap); }
+.slip-total-odds[data-xheat="1"] .tnum { font-size: 17px; }
+.slip-total-odds[data-xheat="2"] .tnum { font-size: 19px; color: #FFE3D2; text-shadow: 0 0 14px rgba(255, 110, 20, .4); }
+.slip-total-odds[data-xheat="3"] .tnum { font-size: 22px; color: #FFF3EC; text-shadow: 0 0 8px rgba(255, 140, 60, .75), 0 0 24px rgba(255, 90, 31, .45); }
+
+/* Kvittot bär spelets tyngd */
+.receipt[data-wow="2"] { border-color: rgba(255, 90, 31, .45); }
+.receipt[data-wow="2"] .payout-line .r-value { font-size: 28px; color: #FFE3D2; text-shadow: 0 0 16px rgba(255, 110, 20, .4); }
+.receipt[data-wow="3"] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(255, 90, 31, .25), 0 0 36px rgba(255, 90, 31, .2);
+}
+.receipt[data-wow="3"] .payout-line .r-value {
+  font-size: 34px; color: #FFF3EC;
+  text-shadow: 0 0 10px rgba(255, 140, 60, .8), 0 0 28px rgba(255, 90, 31, .5);
+}
+
 /* ---------- Magnetisk press ---------- */
 .place-btn { translate: var(--press-x, 0) var(--press-y, 0); }
 

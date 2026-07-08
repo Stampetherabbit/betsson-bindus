@@ -795,6 +795,18 @@ function slipTotals() {
   return { stake, totalStake: stake * sels.length, totalOdds: null, payout };
 }
 
+/* WOW-trappan: <100 baslinje · 100–249 uppvärmd · 250–999 going big · 1000+ fullt drama.
+   Hög kombi-multipel (≥10×) eldar på ett steg. */
+function wowTier(totalStake, totalOdds) {
+  let t = totalStake >= 1000 ? 3 : totalStake >= 250 ? 2 : totalStake >= 100 ? 1 : 0;
+  if (totalOdds != null && totalOdds >= 10 && t < 3) t += 1;
+  return t;
+}
+function oddsHeat(totalOdds) {
+  if (totalOdds == null) return 0;
+  return totalOdds >= 25 ? 3 : totalOdds >= 10 ? 2 : totalOdds >= 5 ? 1 : 0;
+}
+
 function renderSlip() {
   const n = state.selections.size;
   $('slip-badge').textContent = String(n);
@@ -806,6 +818,7 @@ function renderSlip() {
 
   if (n === 0) {
     $('slip-bar-payout').textContent = '';
+    $('betslip').dataset.wow = '0';
     if (isMobile()) closeSheet();
     return;
   }
@@ -842,7 +855,11 @@ function updateSlipNumbers() {
   const t = slipTotals();
 
   $('slip-total-odds').hidden = state.mode !== 'kombi';
-  if (state.mode === 'kombi') $('total-odds-value').textContent = fmtOdds(t.totalOdds);
+  if (state.mode === 'kombi') {
+    $('total-odds-value').textContent = fmtOdds(t.totalOdds);
+    $('slip-total-odds').dataset.xheat = String(oddsHeat(t.totalOdds));
+  }
+  $('betslip').dataset.wow = String(wowTier(t.totalStake, t.totalOdds));
 
   $('stake-label').textContent = state.mode === 'single' && n > 1 ? 'Insats per spel' : 'Insats';
   const showTotal = state.mode === 'single' && n > 1;
@@ -933,6 +950,7 @@ function placeBet() {
     id, placedAt: placedAt.toISOString(),
     type: state.mode === 'kombi' ? 'kombi' : 'single',
     stake: t.stake, totalStake: t.totalStake, payout: t.payout, selections: sels,
+    wow: wowTier(t.totalStake, t.totalOdds),
   };
   try {
     const placed = JSON.parse(localStorage.getItem(LS.placed) || '[]');
@@ -955,6 +973,7 @@ function placeBet() {
 function renderReceipt(bet, placedAt) {
   const r = $('receipt');
   r.innerHTML = '';
+  r.dataset.wow = String(bet.wow || 0);
   r.append(el('div', { class: 'receipt-head' },
     el('span', { html: document.querySelector('.brand .cat-glyph').outerHTML }),
     el('span', { class: 'receipt-title', text: 'Spel lagt' }),
