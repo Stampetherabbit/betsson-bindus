@@ -2,7 +2,7 @@
   "meta": {
     "dataVersion": "2026-07-08",
     "verifiedAt": "2026-07-08",
-    "source": "Al Jazeera / ESPN 2026-07-07 — kvartsfinalister bekräftade: Frankrike, Marocko, Spanien, Belgien, Norge, England, Argentina. Schweiz–Colombia sista åttondelen.",
+    "source": "FIFA / ESPN / Al Jazeera 2026-07-08 — kvartslaget spikat: FRA–MAR, ESP–BEL, NOR–ENG, ARG–SUI. Schweiz slog Colombia 4–3 på straffar (0–0), Argentina slog Egypten 3–2.",
     "note": "Uppdatera efter varje match: sätt status till 'finished' + fyll i result, eller redigera odds. Sajten renderar allt härifrån — ingen kodändring behövs.",
     "timezone": "Europe/Stockholm",
     "competition": {
@@ -22,8 +22,9 @@
       "city": "Vancouver",
       "home": { "name": "Schweiz", "code": "SUI" },
       "away": { "name": "Colombia", "code": "COL" },
-      "status": "open",
-      "result": null,
+      "status": "finished",
+      "result": { "homeScore": 0, "awayScore": 0 },
+      "resultNote": "Schweiz vidare efter straffar, 4–3 (0–0 efter 120 min)",
       "markets": [
         {
           "id": "1x2",
@@ -180,11 +181,39 @@
       "venue": "Kansas City Stadium",
       "city": "Kansas City",
       "home": { "name": "Argentina", "code": "ARG" },
-      "away": { "name": "Schweiz / Colombia", "code": null, "tbd": true },
-      "status": "awaiting",
-      "statusNote": "Odds släpps när motståndaren är klar",
+      "away": { "name": "Schweiz", "code": "SUI" },
+      "status": "open",
       "result": null,
-      "markets": []
+      "markets": [
+        {
+          "id": "1x2",
+          "name": "Matchresultat",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf4-arg-sui--1", "label": "1", "name": "Argentina", "odds": 1.35, "openingOdds": 1.40 },
+            { "id": "qf4-arg-sui--x", "label": "X", "name": "Oavgjort", "odds": 4.60, "openingOdds": 4.50 },
+            { "id": "qf4-arg-sui--2", "label": "2", "name": "Schweiz", "odds": 9.00, "openingOdds": 8.50 }
+          ]
+        },
+        {
+          "id": "ou25",
+          "name": "Över/Under 2.5 mål",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf4-arg-sui--over", "label": "Över 2.5", "name": "Över 2.5 mål", "odds": 1.95, "openingOdds": 1.90 },
+            { "id": "qf4-arg-sui--under", "label": "Under 2.5", "name": "Under 2.5 mål", "odds": 1.85, "openingOdds": 1.90 }
+          ]
+        },
+        {
+          "id": "btts",
+          "name": "Båda lagen gör mål",
+          "note": "Ordinarie tid",
+          "selections": [
+            { "id": "qf4-arg-sui--btts-ja", "label": "Ja", "name": "Båda gör mål — Ja", "odds": 2.15, "openingOdds": 2.10 },
+            { "id": "qf4-arg-sui--btts-nej", "label": "Nej", "name": "Båda gör mål — Nej", "odds": 1.66, "openingOdds": 1.70 }
+          ]
+        }
+      ]
     },
     {
       "id": "sf1",
@@ -235,12 +264,11 @@
         { "id": "outright--fra", "name": "Frankrike", "code": "FRA", "odds": 3.60, "openingOdds": 3.75 },
         { "id": "outright--esp", "name": "Spanien", "code": "ESP", "odds": 3.80, "openingOdds": 3.60 },
         { "id": "outright--eng", "name": "England", "code": "ENG", "odds": 4.75, "openingOdds": 5.00 },
-        { "id": "outright--arg", "name": "Argentina", "code": "ARG", "odds": 6.00, "openingOdds": 5.75 },
+        { "id": "outright--arg", "name": "Argentina", "code": "ARG", "odds": 5.00, "openingOdds": 5.75 },
         { "id": "outright--nor", "name": "Norge", "code": "NOR", "odds": 10.00, "openingOdds": 13.00 },
         { "id": "outright--bel", "name": "Belgien", "code": "BEL", "odds": 13.00, "openingOdds": 12.00 },
         { "id": "outright--mar", "name": "Marocko", "code": "MAR", "odds": 17.00, "openingOdds": 19.00 },
-        { "id": "outright--col", "name": "Colombia", "code": "COL", "odds": 26.00, "openingOdds": 28.00 },
-        { "id": "outright--sui", "name": "Schweiz", "code": "SUI", "odds": 34.00, "openingOdds": 32.00 }
+        { "id": "outright--sui", "name": "Schweiz", "code": "SUI", "odds": 29.00, "openingOdds": 32.00 }
       ]
     },
     {
@@ -267,12 +295,11 @@
         { "id": "final--fra", "name": "Frankrike", "code": "FRA", "odds": 2.10, "openingOdds": 2.20 },
         { "id": "final--esp", "name": "Spanien", "code": "ESP", "odds": 2.20, "openingOdds": 2.10 },
         { "id": "final--eng", "name": "England", "code": "ENG", "odds": 2.75, "openingOdds": 2.90 },
-        { "id": "final--arg", "name": "Argentina", "code": "ARG", "odds": 3.40, "openingOdds": 3.25 },
+        { "id": "final--arg", "name": "Argentina", "code": "ARG", "odds": 2.90, "openingOdds": 3.25 },
         { "id": "final--nor", "name": "Norge", "code": "NOR", "odds": 5.50, "openingOdds": 7.00 },
         { "id": "final--bel", "name": "Belgien", "code": "BEL", "odds": 7.00, "openingOdds": 6.50 },
         { "id": "final--mar", "name": "Marocko", "code": "MAR", "odds": 9.00, "openingOdds": 10.00 },
-        { "id": "final--col", "name": "Colombia", "code": "COL", "odds": 13.00, "openingOdds": 14.00 },
-        { "id": "final--sui", "name": "Schweiz", "code": "SUI", "odds": 17.00, "openingOdds": 16.00 }
+        { "id": "final--sui", "name": "Schweiz", "code": "SUI", "odds": 7.50, "openingOdds": 16.00 }
       ]
     }
   ]

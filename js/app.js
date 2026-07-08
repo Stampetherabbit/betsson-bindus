@@ -472,6 +472,7 @@ function renderMatches() {
       card.append(el('p', { class: 'match-note', text: m.statusNote || 'Odds kommer.' }));
     } else if (m.status === 'finished') {
       card.classList.add('finished');
+      if (m.resultNote) card.append(el('p', { class: 'match-note', text: m.resultNote }));
     } else if (started) {
       // Spelstopp: matchen har startat — visa inget bettbart
       card.append(el('p', { class: 'match-note', text: live ? 'Spelstopp — matchen pågår.' : 'Spelstopp. Uppdatera data/matches.json med resultatet när matchen är klar.' }));
