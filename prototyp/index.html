@@ -1053,6 +1053,8 @@
   @media (max-width: 560px) { .hh-crown { width: 28px; height: 21px; top: -12px; } }
   .hh-name { font-size: var(--t-sm); font-weight: 650; color: var(--ink-2); }
   .hh-net { font-size: clamp(1.05rem, 4.4vw, 1.75rem); font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; }
+  .hh-net.neg, .ep-val.neg { color: var(--dn); }
+  .hh-net.pos, .ep-val.pos { color: var(--up); }
   .hh-lead-chip { font-size: var(--t-label); text-transform: uppercase; letter-spacing: .14em; font-weight: 700; color: var(--acc); border: 1px solid rgba(var(--acc-rgb), .5); border-radius: 999px; padding: 3px 9px; }
   .hh-mid { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; min-width: 0; align-self: center; }
   .hh-eyebrow { font-size: var(--t-label); text-transform: uppercase; letter-spacing: .16em; color: var(--mut); font-weight: 700; }
@@ -2674,7 +2676,7 @@
         (leader === w ? crownSvg : '') +
         '<img class="ds-ava ' + w + '" src="' + p.img + '" alt="" width="84" height="84" draggable="false">' +
         '<div class="hh-name">' + esc(p.name) + '</div>' +
-        '<div class="hh-net tnum">' + netFmt(a.net) + '</div>' +
+        '<div class="hh-net tnum ' + (a.net < 0 ? 'neg' : a.net > 0 ? 'pos' : '') + '">' + netFmt(a.net) + '</div>' +
         (leader === w ? '<div class="hh-lead-chip">Leder</div>' : '') + '</div>';
     }
     var midHtml = '<div class="hh-mid"><div class="hh-eyebrow">Ställningen · Netto</div>' +
@@ -2696,7 +2698,7 @@
         '<img class="ep-ava" src="' + p.img + '" alt="" width="48" height="48" draggable="false"><span class="ep-name">' + esc(p.name) + '</span></div>' +
         '<div class="ep-grid">' +
           cell('Spel', a.list.length) + cell('Satsat', kr0(a.staked)) +
-          cell('Tillbaka', krAuto(a.returned)) + cell('Netto', netFmt(a.net)) +
+          cell('Tillbaka', krAuto(a.returned)) + '<div class="ep-cell"><span class="ep-lbl">Netto</span><span class="ep-val ' + (a.net < 0 ? 'neg' : a.net > 0 ? 'pos' : '') + '">' + esc(netFmt(a.net)) + '</span></div>' +
           cell('Räddade', a.cashouts + ' av ' + a.list.length) +
           cell('Bästa ögonblick', momentOf(w), true) +
         '</div></div>';
