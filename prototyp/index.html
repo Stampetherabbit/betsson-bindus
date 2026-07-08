@@ -1608,6 +1608,39 @@
 
   /* MAX-STINGER — WebAudio-syntetiserad (power-chord + wow-sweep + noise-riser); ligger under rösten (bus-gain .5) */
   var curSting = null;
+  /* Bekräftelse-klang vid lagt spel (Apple Pay-anda, egen syntes): två stigande mjuka toner + oktavskimmer. */
+  function playConfirmChime() {
+    try {
+      var actx = Sound.ctx(); if (!actx || Sound.isMuted()) return;
+      if (actx.state === 'suspended') {
+        try { actx.resume().then(function () { fireChime(actx); }).catch(function () {}); } catch (e) {}
+        return;
+      }
+      fireChime(actx);
+    } catch (e) {}
+  }
+  function fireChime(actx) {
+    try {
+      var t0 = actx.currentTime;
+      var bus = actx.createGain(); bus.gain.value = 0.4;
+      var lp = actx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5200;
+      bus.connect(lp); lp.connect(actx.destination);
+      // ton 1: E5 · ton 2: A5 (kvart upp, 80 ms senare) — vardera med tyst oktav ovanpå för klock-skimmer
+      [[659.25, 0], [880.0, 0.08]].forEach(function (n) {
+        var f = n[0], dt = n[1];
+        [[1, 0.32], [2, 0.07]].forEach(function (h) {
+          var o = actx.createOscillator(); o.type = 'sine'; o.frequency.value = f * h[0];
+          var g = actx.createGain();
+          g.gain.setValueAtTime(0.0001, t0 + dt);
+          g.gain.linearRampToValueAtTime(h[1], t0 + dt + 0.006);
+          g.gain.exponentialRampToValueAtTime(0.0001, t0 + dt + 0.5);
+          o.connect(g); g.connect(bus); o.start(t0 + dt); o.stop(t0 + dt + 0.55);
+        });
+      });
+      setTimeout(function () { try { bus.disconnect(); } catch (e) {} }, 900);
+    } catch (e) {}
+  }
+
   function playMaxStinger() {
     /* Pålitlighet (Lucas-bugg): schemalägg ALDRIG mot en suspended kontext — currentTime är fruset och
        vissa browsers tappar då hela kedjan. Resume:a först (inom gesten), spela när kontexten kör. */
@@ -2130,6 +2163,7 @@
     bets.unshift(bet); saveBets();
 
     // Röst-trappan: styrs av INSATS, utom på maxnivå (tier 4) som alltid äger V5 + max-stingern
+    playConfirmChime();
     if (tier === 4) { Sound.voice(VOICE_V5); playMaxStinger(); } else { Sound.voice(stakeVoice(stake)); }
 
     burst(cta, tier === 4 ? 26 : 8 + tier * 4, tier === 4);
