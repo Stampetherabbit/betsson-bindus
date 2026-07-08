@@ -244,7 +244,10 @@
   }
   .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--acc); flex: none; }
   .hero-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--sp-5); margin-top: var(--sp-4); }
-  .hero h1 { font-size: var(--t-hero); font-weight: 800; letter-spacing: -.04em; margin: 0; line-height: 0.98; text-wrap: balance; }
+  .hero h1 { font-size: var(--t-hero); font-weight: 800; letter-spacing: -.04em; margin: 0; line-height: 0.98; text-wrap: balance;
+    /* Å-ringen sticker upp över boxen vid line-height .98 — kompositlagret under .rv-reveal (blur+transform)
+       klipper vid boxkanten. Padding rymmer ringen; negativ margin nollar layoutskiftet. */
+    padding-top: .1em; margin-top: -.1em; }
   /* Vigneron-em: faux-italic (fonten saknar ital-axel) + guld-gradient via background-clip */
   .hero h1 .gold-em {
     font-style: normal;
