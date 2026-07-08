@@ -1603,23 +1603,29 @@
       } catch (e) {}
     }
     function setMuted(m) { muted = m; if (m && cur) { try { cur.pause(); } catch (e) {} } try { localStorage.setItem('bbp-mute', m ? '1' : '0'); } catch (e) {} }
-    return { voice: voice, ctx: ctx, setMuted: setMuted, isMuted: function () { return muted; }, unlock: function () { var c = ctx(); if (c && c.state === 'suspended') c.resume(); } };
+    return { voice: voice, ctx: ctx, setMuted: setMuted, isMuted: function () { return muted; },
+      recreate: function () { try { if (ac) ac.close(); } catch (e) {} ac = null; return ctx(); },
+      unlock: function () { var c = ctx(); if (c && c.state !== 'running') { try { c.resume(); } catch (e) {} } } };
   })();
   function stakeVoice(kr) { return kr <= 25 ? VOICE_V1 : kr <= 50 ? VOICE_V2 : kr <= 100 ? VOICE_V3 : kr <= 250 ? VOICE_V4 : VOICE_V5; }
 
   /* MAX-STINGER — WebAudio-syntetiserad (power-chord + wow-sweep + noise-riser); ligger under rösten (bus-gain .5) */
   var curSting = null;
   /* Bekräftelse-klang vid lagt spel (Apple Pay-anda, egen syntes): två stigande mjuka toner + oktavskimmer. */
-  function playConfirmChime() {
+  /* Gemensam vakt: kör fn på en GARANTERAT körande kontext. iOS kan sätta state 'interrupted'
+     (inte bara 'suspended') när HTMLAudio-röster spelas — det tystade chime+stinger efter första betet. */
+  function withAudio(fn) {
     try {
       var actx = Sound.ctx(); if (!actx || Sound.isMuted()) return;
-      if (actx.state === 'suspended') {
-        try { actx.resume().then(function () { fireChime(actx); }).catch(function () {}); } catch (e) {}
+      if (actx.state === 'closed') { actx = Sound.recreate(); if (!actx) return; }
+      if (actx.state !== 'running') {
+        try { actx.resume().then(function () { fn(actx); }).catch(function () {}); } catch (e) {}
         return;
       }
-      fireChime(actx);
+      fn(actx);
     } catch (e) {}
   }
+  function playConfirmChime() { withAudio(fireChime); }
   function fireChime(actx) {
     try {
       var t0 = actx.currentTime;
@@ -1642,18 +1648,7 @@
     } catch (e) {}
   }
 
-  function playMaxStinger() {
-    /* Pålitlighet (Lucas-bugg): schemalägg ALDRIG mot en suspended kontext — currentTime är fruset och
-       vissa browsers tappar då hela kedjan. Resume:a först (inom gesten), spela när kontexten kör. */
-    try {
-      var actx = Sound.ctx(); if (!actx || Sound.isMuted()) return;
-      if (actx.state === 'suspended') {
-        try { actx.resume().then(function () { fireSting(actx); }).catch(function () {}); } catch (e) {}
-        return;
-      }
-      fireSting(actx);
-    } catch (e) {}
-  }
+  function playMaxStinger() { withAudio(fireSting); }
   function fireSting(actx) {
     try {
       if (curSting) { try { curSting.gain.setTargetAtTime(0.0001, actx.currentTime, 0.02); } catch (e) {} curSting = null; }
