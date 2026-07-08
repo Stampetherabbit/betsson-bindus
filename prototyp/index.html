@@ -175,7 +175,8 @@
     .island .tab { padding: 9px 12px; font-size: var(--t-sm); }
     /* §6 (v8): öppen kupong (mobil) äger skärmen → nav-ön glider ur vägen bakom tickern + slutar ta emot klick.
        Samma specificitet som :root.nav-docked .island (0,3,0); källordning senare → vinner medan .slip-open sätts. */
-    :root.slip-open .island { opacity: 0; pointer-events: none; transform: translate(-50%, -140%); }
+    :root.slip-open .ticker { opacity: .3; }
+  :root.slip-open .island { opacity: 0; pointer-events: none; transform: translate(-50%, -140%); }
   }
 
   /* ===== Framsida ===== */
@@ -1875,8 +1876,9 @@
   function syncRoom() {
     var tier = parseInt(slip.dataset.tier || '0', 10);
     var eng = slipEngaged() && !reduced;
+    var openMobile = mqMobile.matches && slip.classList.contains('open') && !slip.hidden;
     document.documentElement.dataset.heat = eng ? String(tier) : '0';
-    dim.classList.toggle('on', eng && tier === 4);
+    dim.classList.toggle('on', openMobile || (eng && tier === 4));
     roomEmbers.classList.toggle('active', eng && tier === 4);
   }
   mqMobile.addEventListener('change', syncRoom);           // resize över brytpunkten
@@ -2435,7 +2437,7 @@
     mdOpener = null;
     /* §7 (v8): gemensam väg för ALLA stängningsvägar (×, footer-Stäng, dim, Escape) — finns ≥1 val i kupongen
        öppnas Ditt bet (mobil-drawern) och slip-vyn visas (ev. kvarvarande kvitto byts mot bygg-vyn). 0 val → inget. */
-    if (sel.size > 0) { showSlipView(); setOpen(true); }
+    if (sel.size > 0) showSlipView(); // auto-öppning borttagen (Lucas v9.3) — baren glöder redan vid val, öppnas manuellt
   }
   mdClose.addEventListener('click', closeSheet);
   document.getElementById('md-foot-close').addEventListener('click', closeSheet);
