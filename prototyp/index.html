@@ -1892,15 +1892,30 @@
   track.innerHTML = seq + seq;
 
   /* ---- Countdown (FRA–MAR tor 22:00) ---- */
-  var t = 35 * 3600 + 48 * 60;
+  /* Riktig nedräkning: räknas mot nästa faktiska avspark (svensk tid), driftsäker mot flik-sömn. */
+  var KICKOFFS = [
+    Date.parse('2026-07-09T22:00:00+02:00'),   // KF1 FRA–MAR
+    Date.parse('2026-07-10T21:00:00+02:00'),   // KF2 ESP–BEL
+    Date.parse('2026-07-11T23:00:00+02:00'),   // KF3 NOR–ENG
+    Date.parse('2026-07-13T03:00:00+02:00')    // KF4 ARG–SUI (natt mot måndag)
+  ];
   var cd = document.getElementById('cd');
   var colon = ':';
   function paintCd() {
+    var now = Date.now(), next = null;
+    for (var i = 0; i < KICKOFFS.length; i++) { if (KICKOFFS[i] > now) { next = KICKOFFS[i]; break; } }
+    if (next === null) {
+      // alla kvartar spelade — peka mot semifinalhelgen i stället för att frysa på noll
+      var p = cd.parentElement; if (p && p.firstChild && p.firstChild.nodeType === 3) p.firstChild.textContent = 'Semifinaler ';
+      cd.textContent = '14–15 juli';
+      return;
+    }
+    var t = Math.max(0, Math.floor((next - now) / 1000));
     var h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), s = t % 60;
     cd.textContent = String(h).padStart(2, '0') + colon + String(m).padStart(2, '0') + colon + String(s).padStart(2, '0');
   }
   paintCd();
-  setInterval(function () { if (t > 0) { t--; paintCd(); } }, 1000);
+  setInterval(paintCd, 1000);
 
   /* ---- Wow-trappan ---- */
   function stakeTier(kr) { return kr >= 1000 ? 4 : kr >= 200 ? 3 : kr >= 100 ? 2 : kr >= 50 ? 1 : 0; }
